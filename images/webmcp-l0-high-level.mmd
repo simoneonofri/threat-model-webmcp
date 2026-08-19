@@ -1,0 +1,61 @@
+%%{init: {"theme":"base","themeCSS":".nodeLabel,.edgeLabel,.cluster-label,.label{font-family:Arial,sans-serif!important;font-weight:bold!important;}","flowchart":{"htmlLabels":true,"curve":"linear","nodeSpacing":80,"rankSpacing":95,"padding":18},"themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"22px","primaryColor":"#fff","primaryTextColor":"#000","primaryBorderColor":"#000","lineColor":"#000","secondaryColor":"#fff","tertiaryColor":"#fff","edgeLabelBackground":"#fff","clusterBkg":"#fff","clusterBorder":"#000"}}}%%
+flowchart TB
+
+  subgraph TB1_UserBoundary["TB-01 User Boundary"]
+    EE1_User[EE-01<br/>User]
+  end
+
+  subgraph TB4_AgentBoundary["TB-04 Agent Boundary"]
+    PO3_AIAgentOrchestrator(PO-03<br/>AI Agent<br/>Orchestrator)
+  end
+
+  subgraph TB2_BrowserBoundary["TB-02 User Agent Boundary"]
+    direction TB
+    PO1_WebBrowser(PO-01<br/>Web Browser)
+    DS2_PendingExecutions[(DS-02<br/>Pending Tool<br/>Executions Map)]
+
+    subgraph TB3_WebContextIsolation["TB-03 Web Context Isolation Boundaries"]
+      PO2_DocumentOriginContext(PO-02<br/>Document / Origin<br/>Execution Context)
+      DS1_ManifestToolStore[(DS-01<br/>Manifest /<br/>Tool Store)]
+    end
+  end
+
+  EE2_RemoteWebSite[EE-02<br/>Remote Web Site / Service]
+  EE3_AIInferenceProvider[EE-03<br/>AI Inference<br/>Provider]
+
+  EE1_User ==>|DF-01<br/>User Input / Navigation| PO1_WebBrowser
+  EE1_User <==>|DF-02<br/>Rendered Output /<br/>Browser Mediation| PO1_WebBrowser
+
+  EE1_User ==>|DF-10<br/>Prompt / Goal| PO3_AIAgentOrchestrator
+  EE1_User <==>|DF-15<br/>Final Response| PO3_AIAgentOrchestrator
+  PO3_AIAgentOrchestrator ==>|DF-11<br/>Tool Call| PO1_WebBrowser
+  PO3_AIAgentOrchestrator <==>|DF-14<br/>Return Payload| PO1_WebBrowser
+  PO3_AIAgentOrchestrator <==>|DF-09<br/>Tools Exposed<br/>to Agent| DS1_ManifestToolStore
+
+  PO1_WebBrowser ==>|DF-08<br/>Registered Tool State| DS1_ManifestToolStore
+  PO1_WebBrowser <==>|DF-05<br/>Web API Request| PO2_DocumentOriginContext
+  PO1_WebBrowser ==>|DF-06<br/>Web API Result /<br/>Event / Error| PO2_DocumentOriginContext
+  PO1_WebBrowser <==>|DF-07<br/>Tool Exposure /<br/>Registration Request| PO2_DocumentOriginContext
+  PO1_WebBrowser ==>|DF-12<br/>Tool Invocation| PO2_DocumentOriginContext
+  PO1_WebBrowser <==>|DF-13<br/>Tool Output| PO2_DocumentOriginContext
+
+  PO2_DocumentOriginContext <==>|DF-03<br/>Web Content /<br/>Response Data| EE2_RemoteWebSite
+  PO2_DocumentOriginContext ==>|DF-04<br/>Requests /<br/>Submitted Data| EE2_RemoteWebSite
+
+  PO3_AIAgentOrchestrator ==>|DF-16<br/>Inference Request /<br/>Context| EE3_AIInferenceProvider
+  EE3_AIInferenceProvider ==>|DF-17<br/>Inference Response /<br/>Tool Selection| PO3_AIAgentOrchestrator
+
+  PO1_WebBrowser ==>|DF-18<br/>Pending Execution<br/>State Update| DS2_PendingExecutions
+  DS2_PendingExecutions ==>|DF-19<br/>Pending Execution<br/>State / Lookup| PO1_WebBrowser
+
+  classDef default fill:#fff,stroke:#000,stroke-width:4px,color:#000,font-size:22px,font-weight:bold,font-family:Arial
+
+  style TB1_UserBoundary fill:#ffffff,stroke:#000000,stroke-width:4px,stroke-dasharray:8 6,color:#000000
+  style TB2_BrowserBoundary fill:#ffffff,stroke:#000000,stroke-width:4px,stroke-dasharray:8 6,color:#000000
+  style TB3_WebContextIsolation fill:#f7f7f7,stroke:#000000,stroke-width:4px,stroke-dasharray:8 6,color:#000000
+  style TB4_AgentBoundary fill:#ffffff,stroke:#000000,stroke-width:4px,stroke-dasharray:8 6,color:#000000
+
+  linkStyle 1,3,5,6,8,10,12,13 marker-end:none
+  linkStyle default stroke:#000,stroke-width:3px,color:#000
+
+
