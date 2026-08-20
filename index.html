@@ -8,9 +8,25 @@
   <meta content="Bikeshed version d113b2e81, updated Tue Jun 9 14:57:55 2026 -0700" name="generator">
   <link href="https://simoneonofri.github.io/threat-model-webmcp/" rel="canonical">
   <link href="https://www.w3.org/2008/site/images/favicon.ico" rel="icon">
-  <meta content="53b7479a524d6c95931032628906b71dbca12e37" name="revision">
+  <meta content="aa8722aa7a835e38c7a736bcb3a96068120a98db" name="revision">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
+<style>
+  .threat-status-tracked {
+    background-color: #e6f4ea;
+    color: #111;
+  }
+
+  .threat-status-modify {
+    background-color: #fff0db;
+    color: #111;
+  }
+
+  .threat-status-add {
+    background-color: #fce8e6;
+    color: #111;
+  }
+</style>
 <style>/* Boilerplate: style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -424,7 +440,7 @@ dfn > a.self-link::before      { content: "#"; }
 </p>
    <h1 class="no-ref p-name" id="title">Threat Model for WebMCP</h1>
    <p id="w3c-state"><a href="https://www.w3.org/standards/types/#UD">Unofficial Proposal Draft</a>,
-    <time class="dt-updated" datetime="2026-08-19">19 August 2026</time></p>
+    <time class="dt-updated" datetime="2026-08-20">20 August 2026</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -472,93 +488,120 @@ dfn > a.self-link::before      { content: "#"; }
      <ol class="toc">
       <li><a href="#scenario"><span class="secno">2.1</span> <span class="content">Scenario</span></a>
       <li>
-       <a href="#diagrams"><span class="secno">2.2</span> <span class="content">Diagrams</span></a>
+       <a href="#l0-high-level-deployment-views"><span class="secno">2.2</span> <span class="content">L0: High-Level Deployment Views</span></a>
        <ol class="toc">
-        <li><a href="#l0-high-level"><span class="secno">2.2.1</span> <span class="content">L0: High-Level</span></a>
-        <li><a href="#l1-methods-level"><span class="secno">2.2.2</span> <span class="content">L1: Methods Level</span></a>
+        <li><a href="#l0-browser-integrated-agent"><span class="secno">2.2.1</span> <span class="content">Browser-integrated agent</span></a>
+        <li><a href="#l0-author-provided-in-page-agent"><span class="secno">2.2.2</span> <span class="content">Author-provided in-page agent</span></a>
+        <li><a href="#l0-elements"><span class="secno">2.2.3</span> <span class="content">L0 Elements</span></a>
+        <li><a href="#l0-trust-boundaries"><span class="secno">2.2.4</span> <span class="content">L0 Trust Boundaries</span></a>
+        <li><a href="#l0-data-flows"><span class="secno">2.2.5</span> <span class="content">L0 Data Flows</span></a>
        </ol>
       <li>
-       <a href="#dictionaries"><span class="secno">2.3</span> <span class="content">Dictionaries</span></a>
+       <a href="#l1-methods-level-deployment-views"><span class="secno">2.3</span> <span class="content">L1: Methods-Level Deployment Views</span></a>
        <ol class="toc">
-        <li><a href="#elements"><span class="secno">2.3.1</span> <span class="content">Elements</span></a>
-        <li><a href="#trust-boundaries"><span class="secno">2.3.2</span> <span class="content">Trust boundaries</span></a>
-        <li><a href="#data-flows"><span class="secno">2.3.3</span> <span class="content">Data Flows</span></a>
+        <li><a href="#l1-browser-integrated-agent"><span class="secno">2.3.1</span> <span class="content">Browser-integrated agent</span></a>
+        <li><a href="#l1-author-provided-in-page-agent"><span class="secno">2.3.2</span> <span class="content">Author-provided in-page agent</span></a>
+        <li><a href="#l1-elements"><span class="secno">2.3.3</span> <span class="content">L1 Elements</span></a>
+        <li><a href="#l1-trust-boundaries"><span class="secno">2.3.4</span> <span class="content">L1 Trust Boundaries</span></a>
+        <li><a href="#l1-data-flows"><span class="secno">2.3.5</span> <span class="content">L1 Data Flows</span></a>
+        <li><a href="#mapping"><span class="secno">2.3.6</span> <span class="content">Mapping</span></a>
        </ol>
       <li><a href="#what-can-go-wrong"><span class="secno">2.4</span> <span class="content">What can go wrong?</span></a>
      </ol>
-    <li>
-     <a href="#what-are-we-going-to-do-about-it"><span class="secno">3</span> <span class="content">What are we going to do about it?</span></a>
-     <ol class="toc">
-      <li><a href="#candidate-deployment-response-independent-policy-based-assessment"><span class="secno">3.1</span> <span class="content">Candidate deployment response: independent policy-based assessment</span></a>
-     </ol>
+    <li><a href="#what-are-we-going-to-do-about-it"><span class="secno">3</span> <span class="content">What are we going to do about it?</span></a>
     <li><a href="#did-we-do-a-good-enough-job"><span class="secno">4</span> <span class="content">Did we do a good enough job?</span></a>
+    <li>
+     <a href="#references"><span class="secno"></span> <span class="content">References</span></a>
+     <ol class="toc">
+      <li><a href="#normative"><span class="secno"></span> <span class="content">Normative References</span></a>
+      <li><a href="#informative"><span class="secno"></span> <span class="content">Non-Normative References</span></a>
+     </ol>
    </ol>
   </nav>
   <main>
    <h2 class="heading settled" data-level="1" id="introduction"><span class="secno">1. </span><span class="content">Introduction</span><a class="self-link" href="#introduction"></a></h2>
-   <p>This threat model covers WebMCP specifications and integrates some implementation elements to provide a clearer view. WebMCP is a browser-side API surface that allows a web document to expose page functionality as structured tools that can be discovered and invoked by browser-integrated or in-page agents (e.g., <a href="https://github.com/alibaba/page-agent">PageAgent</a>).
-WebMCP does not create every threat considered in this model. These can be derived from Agentic navigation, MCP-style tool mediation, and WebMCP-specific features.</p>
+   <p>This threat model covers WebMCP specifications and uses selected implementation evidence where it clarifies the modeled flows. WebMCP is a browser-side API surface that allows a web document to expose page functionality as structured tools that can be discovered and invoked by browser-integrated or in-page agents (for example, PageAgent <a data-link-type="biblio" href="#biblio-pageagent" title="PageAgent: JavaScript in-page GUI agent">[PAGEAGENT]</a>).
+Not every threat in the model originates in WebMCP. The model separates threats inherent to agentic navigation, threats introduced by MCP-style tool mediation, and threats specific to WebMCP.</p>
    <p><em>Note: WebMCP is not a backend MCP deployment. Instead, it brings MCP-like tool interaction into the browser by reusing an existing web application’s functionality and state and exposing that functionality to agents through browser-side mechanisms.</em></p>
    <h3 class="heading settled" data-level="1.1" id="terminology"><span class="secno">1.1. </span><span class="content">Terminology</span><a class="self-link" href="#terminology"></a></h3>
-   <p>This threat model uses the terminology defined in the WebMCP specification and its accompanying explainer.</p>
+   <p>This threat model uses the terminology defined in the <a href="https://webmachinelearning.github.io/webmcp/#terminology">WebMCP Terminology section</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a> and its accompanying explainer <a data-link-type="biblio" href="#biblio-webmcp-explainer" title="WebMCP Explainer">[WEBMCP-EXPLAINER]</a>.</p>
    <h3 class="heading settled" data-level="1.2" id="related-work"><span class="secno">1.2. </span><span class="content">Related Work</span><a class="self-link" href="#related-work"></a></h3>
    <ul>
     <li data-md>
-     <p><a href="https://webmachinelearning.github.io/webmcp/">WebMCP Draft Community Group Report</a></p>
+     <p><cite>WebMCP</cite> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a></p>
     <li data-md>
-     <p><a href="https://github.com/webmachinelearning/webmcp/blob/main/README.md">WebMCP explainer</a></p>
+     <p><cite>WebMCP Explainer</cite> <a data-link-type="biblio" href="#biblio-webmcp-explainer" title="WebMCP Explainer">[WEBMCP-EXPLAINER]</a></p>
     <li data-md>
-     <p><a href="https://github.com/webmachinelearning/webmcp/blob/main/declarative-api-explainer.md">Declarative API explainer</a></p>
+     <p><cite>Declarative WebMCP API Explainer</cite> <a data-link-type="biblio" href="#biblio-webmcp-declarative-explainer" title="Declarative WebMCP API Explainer">[WEBMCP-DECLARATIVE-EXPLAINER]</a></p>
     <li data-md>
-     <p><a href="https://github.com/victorhuangwq/webmcp/blob/security-and-privacy-questionnaire/security-privacy-questionnaire.md">Security and Privacy self-review questionnaire</a></p>
+     <p><cite>WebMCP Self-Review Questionnaire: Security and Privacy</cite> <a data-link-type="biblio" href="#biblio-webmcp-spq" title="WebMCP Self-Review Questionnaire: Security and Privacy">[WEBMCP-SPQ]</a></p>
     <li data-md>
-     <p><a href="https://github.com/webmachinelearning/webmcp/issues/44">Issue \#44: Managing action-specific permissions</a></p>
+     <p><cite>Managing action specific permissions</cite> <a data-link-type="biblio" href="#biblio-webmcp-issue-44" title="Managing action specific permissions">[WEBMCP-ISSUE-44]</a></p>
     <li data-md>
-     <p><a href="https://developer.chrome.com/docs/ai/webmcp">Chrome WebMCP guide</a></p>
+     <p><cite>Chrome WebMCP guide</cite> <a data-link-type="biblio" href="#biblio-chrome-webmcp" title="WebMCP">[CHROME-WEBMCP]</a></p>
     <li data-md>
-     <p><a href="https://developer.chrome.com/docs/ai/webmcp/secure-tools">Chrome WebMCP tool security guidance</a></p>
+     <p><cite>WebMCP tool security</cite> <a data-link-type="biblio" href="#biblio-chrome-webmcp-security" title="WebMCP tool security">[CHROME-WEBMCP-SECURITY]</a></p>
     <li data-md>
-     <p><a href="https://developer.chrome.com/docs/agents/security">Chrome agent security considerations for WebMCP</a></p>
+     <p><cite>Agent security considerations for WebMCP</cite> <a data-link-type="biblio" href="#biblio-chrome-agent-security" title="Agent security considerations for WebMCP">[CHROME-AGENT-SECURITY]</a></p>
     <li data-md>
-     <p><a href="https://doi.org/10.48550/arXiv.2606.06387">WebMCP tool surface poisoning: Runtime manipulation attacks on LLM agents</a></p>
+     <p><cite>WebMCP Tool Surface Poisoning: Runtime Manipulation Attacks on LLM Agents</cite> <a data-link-type="biblio" href="#biblio-lee-webmcp-poisoning" title="WebMCP Tool Surface Poisoning: Runtime Manipulation Attacks on LLM Agents">[LEE-WEBMCP-POISONING]</a></p>
     <li data-md>
-     <p><a href="https://www.earlence.com/blog.html#/post/webmcp-sameorigin">Breaking origin isolation without breaking the browser</a></p>
+     <p><cite>Breaking Origin Isolation without Breaking the Browser</cite> <a data-link-type="biblio" href="#biblio-fernandes-webmcp-sameorigin" title="Breaking Origin Isolation without Breaking the Browser">[FERNANDES-WEBMCP-SAMEORIGIN]</a></p>
     <li data-md>
-     <p><a href="https://www.w3.org/2025/11/12-agentic-browsing-sec-minutes.html">Agentic Browsing and the Web’s Security Model</a></p>
+     <p><cite>Agentic Browsing and the Web’s Security Model</cite> <a data-link-type="biblio" href="#biblio-agentic-browsing-tpac-2025" title="Agentic Browsing and the Web&apos;s Security Model — Meeting Minutes">[AGENTIC-BROWSING-TPAC-2025]</a></p>
     <li data-md>
-     <p><a href="https://github.com/w3c-cg/threat-modeling/blob/agentic-ai-web-browsers-rewrite/meetings/2026-07-14_minutes.md">Threat Modeling Community Group — 14 July 2026 minutes</a></p>
-    <li data-md>
-     <p><a href="https://arxiv.org/abs/2606.06387">WebMCP Tool Surface Poisoning</a></p>
+     <p><cite>Threat Modeling Community Group Meeting Minutes</cite> <a data-link-type="biblio" href="#biblio-tmcg-minutes-2026-07-14" title="Threat Modeling Community Group Meeting Minutes">[TMCG-MINUTES-2026-07-14]</a></p>
    </ul>
    <h3 class="heading settled" data-level="1.3" id="methodology"><span class="secno">1.3. </span><span class="content">Methodology</span><a class="self-link" href="#methodology"></a></h3>
-   <p>This threat model follows the <a href="https://www.w3.org/TR/threat-modeling-guide/">W3C Threat Modeling Guide</a>. It begins by modeling the system under analysis and identifying its elements, data flows, and trust boundaries.</p>
+   <p>This threat model follows the <cite>Threat Modeling Guide</cite> <a data-link-type="biblio" href="#biblio-threat-modeling-guide" title="Threat Modeling Guide">[THREAT-MODELING-GUIDE]</a>. It begins by modeling the system under analysis and identifying its elements, data flows, and trust boundaries.</p>
    <p>Threat elicitation uses STRIDE as a first pass across those elements and flows. PHANTOM-B complements this analysis for threats associated with the LLM-dependent parts of the system.</p>
-   <p>The model also draws on the <a href="https://www.w3.org/TR/threat-model-web/">Threat Model for the Web</a> and its Web Security Model, particularly the concepts of origin, isolation, browser mediation, and untrusted web content.</p>
+   <p>The model also draws on <cite>Threat Model for the Web</cite> <a data-link-type="biblio" href="#biblio-threat-model-web" title="Threat Model for the Web">[THREAT-MODEL-WEB]</a> and its Web Security Model, particularly the concepts of origin, isolation, browser mediation, and untrusted web content.</p>
    <h2 class="heading settled" data-level="2" id="what-are-we-working-on"><span class="secno">2. </span><span class="content">What are we working on?</span><a class="self-link" href="#what-are-we-working-on"></a></h2>
-   <p>This model starts from a generic, high-level Web API diagram from the Threat Model for the Web, and the system under analysis is created by adding the specific WebIDL, methods, and dictionaries from the specification, detailed in a methods-level view.</p>
+   <p>The L0 views start from the generic high-level Web API diagram in the <cite>Threat Model for the Web</cite> <a data-link-type="biblio" href="#biblio-threat-model-web" title="Threat Model for the Web">[THREAT-MODEL-WEB]</a>. The methods-level views add the specification’s WebIDL, methods, and dictionaries.</p>
    <h3 class="heading settled" data-level="2.1" id="scenario"><span class="secno">2.1. </span><span class="content">Scenario</span><a class="self-link" href="#scenario"></a></h3>
-   <p>This threat model considers an agentic Web in which AI agents can navigate and interact with web pages and web applications on a user’s behalf. WebMCP describes two relevant deployment models: an AI agent integrated into the browser, and an author-provided agent running in the page, for example through JavaScript. The latter can be illustrated, without treating it as a WebMCP implementation or a normative example, by Alibaba’s Page Agent: an in-page JavaScript agent that operates a web interface through the page’s DOM.</p>
+   <p>This threat model considers an agentic Web in which AI agents can navigate and interact with web pages and web applications on a user’s behalf. WebMCP describes two relevant deployment models: an AI agent integrated into the browser, and an author-provided in-page agent implemented in JavaScript, either embedded directly in a page or running in an iframe <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a> <a data-link-type="biblio" href="#biblio-webmcp-explainer" title="WebMCP Explainer">[WEBMCP-EXPLAINER]</a>. Alibaba’s PageAgent <a data-link-type="biblio" href="#biblio-pageagent" title="PageAgent: JavaScript in-page GUI agent">[PAGEAGENT]</a> illustrates the latter without being a WebMCP implementation or normative example. It is an in-page JavaScript agent that operates a web interface through the page’s DOM.</p>
    <p>WebMCP provides an MCP-like interaction model for a web application. Rather than requiring an agent to infer an action from the rendered interface — for example, by inspecting the DOM or using screenshots to find a product-search control — a page can expose a structured search-products tool with a description and input schema. The agent can discover that tool and invoke it with structured arguments, while the page executes its existing application logic and returns a structured result.</p>
    <p>A page can expose this functionality in two ways. The imperative API lets page code register tools directly in JavaScript. The declarative API allows the browser to derive tools from existing HTML forms and standard inputs.</p>
    <p>Both mechanisms are intended to make existing web application functionality available to agents without requiring the agent to operate the user interface as a sequence of low-level interactions.
-This distinction also frames the threat model. Some threats are inherent to agentic web navigation, independently of WebMCP. Others arise when an agent uses a web page through an MCP-like tool interface. A third set is specific to the WebMCP surface itself, including tool registration, discovery, invocation, browser mediation, and the declarative and imperative exposure mechanisms. These categories can overlap, but separating them helps identify which risks WebMCP may reduce, which remain outside its scope, and which new risks its design can introduce.</p>
-   <h3 class="heading settled" data-level="2.2" id="diagrams"><span class="secno">2.2. </span><span class="content">Diagrams</span><a class="self-link" href="#diagrams"></a></h3>
-   <h4 class="heading settled" data-level="2.2.1" id="l0-high-level"><span class="secno">2.2.1. </span><span class="content">L0: High-Level</span><a class="self-link" href="#l0-high-level"></a></h4>
+The threat model separates three sources of threats:</p>
+   <ul>
+    <li data-md>
+     <p>threats inherent to agentic web navigation, independently of WebMCP;</p>
+    <li data-md>
+     <p>threats that arise when an agent uses a web page through an MCP-like tool interface; and</p>
+    <li data-md>
+     <p>threats specific to the WebMCP surface, including tool registration, discovery, invocation, browser mediation, and the declarative and imperative exposure mechanisms.</p>
+   </ul>
+   <p>The categories can overlap, but keeping them separate makes three questions explicit:</p>
+   <ul>
+    <li data-md>
+     <p>Which threats may WebMCP reduce?</p>
+    <li data-md>
+     <p>Which threats remain outside WebMCP’s scope?</p>
+    <li data-md>
+     <p>Which new threats may WebMCP introduce?</p>
+   </ul>
+   <h3 class="heading settled" data-level="2.2" id="l0-high-level-deployment-views"><span class="secno">2.2. </span><span class="content">L0: High-Level Deployment Views</span><a class="self-link" href="#l0-high-level-deployment-views"></a></h3>
+   <p>WebMCP supports two deployment models that place the agent on different sides of the document/origin boundary. Because the placement of <code>PO-03</code> and <code>TB-03</code> changes the trust-boundary topology, each deployment is shown as a complete diagram.</p>
+   <h4 class="heading settled" data-level="2.2.1" id="l0-browser-integrated-agent"><span class="secno">2.2.1. </span><span class="content">Browser-integrated agent</span><a class="self-link" href="#l0-browser-integrated-agent"></a></h4>
    <figure>
     
-  <img alt="High-level data-flow diagram showing the user, AI agent orchestrator and inference provider, browser, document and origin context, remote site, tool store, pending executions, data flows, and trust boundaries." height="1511" src="images/webmcp-l0-high-level.svg" width="2139">
+  <img alt="High-level data-flow diagram for a browser-integrated AI agent, with the AI Agent Boundary inside the Web User Agent Boundary and outside the document and origin isolation boundary." height="1439" src="images/webmcp-l0-high-level.svg" width="1666">
   
-    <figcaption>WebMCP high-level data-flow diagram</figcaption>
+    <figcaption>L0-BI: browser-integrated agent deployment</figcaption>
    </figure>
-   <h4 class="heading settled" data-level="2.2.2" id="l1-methods-level"><span class="secno">2.2.2. </span><span class="content">L1: Methods Level</span><a class="self-link" href="#l1-methods-level"></a></h4>
+   <h4 class="heading settled" data-level="2.2.2" id="l0-author-provided-in-page-agent"><span class="secno">2.2.2. </span><span class="content">Author-provided in-page agent</span><a class="self-link" href="#l0-author-provided-in-page-agent"></a></h4>
    <figure>
     
-  <img alt="Methods-level data-flow diagram showing the ModelContext getter, registerTool, getTools, executeTool, unloading cleanup, observation, stores, document and origin context, and AI agent orchestrator." height="580" src="images/webmcp-l1-methods-level.svg" width="2956">
+  <img alt="High-level data-flow diagram for an author-provided in-page agent, with the AI Agent Boundary nested in the document and origin isolation boundary family." height="1441" src="images/webmcp-l0-in-page-agent.svg" width="2019">
   
-    <figcaption>WebMCP methods-level data-flow diagram</figcaption>
+    <figcaption>L0-IP: author-provided in-page agent deployment</figcaption>
    </figure>
-   <h3 class="heading settled" data-level="2.3" id="dictionaries"><span class="secno">2.3. </span><span class="content">Dictionaries</span><a class="self-link" href="#dictionaries"></a></h3>
-   <h4 class="heading settled" data-level="2.3.1" id="elements"><span class="secno">2.3.1. </span><span class="content">Elements</span><a class="self-link" href="#elements"></a></h4>
+   <p>Pastel yellow is only a provenance fill: it identifies shapes inherited from the generic Web API L0 model. Unfilled white shapes are WebMCP additions.</p>
+   <p>The inherited elements are <code>EE-01</code>, <code>EE-02</code>, <code>PO-01</code>, <code>PO-02</code>, <code>TB-01</code>, and <code>TB-02</code>; WebMCP additions are <code>PO-03</code>, <code>DS-01</code>, <code>DS-02</code>, <code>EE-03</code>, and <code>TB-03</code>.</p>
+   <p>In L0-BI, <code>TB-03 AI Agent Boundary</code> is inside <code>TB-01</code> and outside <code>TB-02</code>. In L0-IP it is a logical author/agent responsibility boundary inside the <code>TB-02</code> boundary family. It may collapse into the same-origin page context or correspond to a separate iframe origin; the diagram does not imply a new browser-enforced isolation primitive.</p>
+   <p>The specification explicitly distinguishes JavaScript in-page agents using <code>ModelContext</code> APIs from the browser’s agent, which uses an implementation-defined observation and internal invocation mechanism <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>. No normative WebMCP algorithm creates, mutates, or enters <code>PO-03</code>; it is a deployment actor whose exchanges with browser-controlled algorithms are represented in the DFD.</p>
+   <h4 class="heading settled" data-level="2.2.3" id="l0-elements"><span class="secno">2.2.3. </span><span class="content">L0 Elements</span><a class="self-link" href="#l0-elements"></a></h4>
    <table class="data">
     <thead>
      <tr>
@@ -576,7 +619,7 @@ This distinction also frames the threat model. Some threats are inherent to agen
       <td>External Entity
       <td>EE-01 User
       <td>Person who supplies browser input or navigation intent, can provide a goal to the AI Agent Orchestrator, and receives browser or agent output.
-      <td>TB-01
+      <td>
       <td><a href="https://www.w3.org/TR/threat-model-web/#element-dictionary">Threat Model for the Web — High-level element dictionary</a>
      <tr>
       <td>EE-02
@@ -593,97 +636,49 @@ This distinction also frames the threat model. Some threats are inherent to agen
       <td>EE-03 AI Inference Provider
       <td>External or separately controlled inference capability used by the AI Agent Orchestrator to interpret goals and produce model outputs or tool-selection decisions.
       <td>
-      <td><a href="https://webmachinelearning.github.io/webmcp/#ai-platform">WebMCP — AI platform</a>
+      <td><a href="https://webmachinelearning.github.io/webmcp/#ai-platform">WebMCP — AI platform</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
      <tr>
       <td>PO-01
       <td>L0
       <td>Process
       <td>PO-01 Web Browser
       <td>Web browser process that mediates generic Web API exchanges and WebMCP registration, tool-state management, invocation, and result routing at L0.
-      <td>TB-02
+      <td>TB-01
       <td><a href="https://www.w3.org/TR/threat-model-web/#high-level-web-threat-model">Threat Model for the Web — High-Level Web Threat Model</a>
      <tr>
-      <td>PO-01.1
-      <td>L1
-      <td>Process
-      <td>PO-01.1 registerTool
-      <td>Named ModelContext registration algorithm promoted as a candidate process without expanding its numbered steps.
-      <td>TB-02
-      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-registertool">WebMCP — registerTool()</a>
-     <tr>
-      <td>PO-01.2
-      <td>L1
-      <td>Process
-      <td>PO-01.2 getTools
-      <td>Named discovery algorithm that traverses eligible documents, applies policy and exposure rules, constructs RegisteredTool values, sorts them, and settles the caller promise.
-      <td>TB-02
-      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-gettools">WebMCP — getTools()</a>
-     <tr>
-      <td>PO-01.3
-      <td>L1
-      <td>Process
-      <td>PO-01.3 executeTool
-      <td>Named in-page invocation algorithm that validates caller and target context, creates pending execution state, dispatches execution, and settles the caller promise.
-      <td>TB-02
-      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-executetool">WebMCP — executeTool()</a>
-     <tr>
-      <td>PO-01.7
-      <td>L1
-      <td>Process
-      <td>PO-01.7 Unloading Document Cleanup
-      <td>Specification unloading cleanup algorithm that removes or completes pending executions associated with a destroyed caller or target document.
-      <td>TB-02
-      <td><a href="https://webmachinelearning.github.io/webmcp/#pending-tool-executions">WebMCP — Pending tool executions</a>
-     <tr>
-      <td>PO-01.8
-      <td>L1
-      <td>Process
-      <td>PO-01.8 Perform an Observation
-      <td>Named non-normative example algorithm that constructs a document-keyed tool map and exposes the observation to the browser agent through an implementation-defined mechanism.
-      <td>TB-02
-      <td><a href="https://webmachinelearning.github.io/webmcp/#perform-an-observation">WebMCP — Perform an observation</a>
-     <tr>
-      <td>PO-01.9
-      <td>L1
-      <td>Process
-      <td>PO-01.9 Document.modelContext Getter
-      <td>Named Web API entry algorithm that returns the Document’s associated ModelContext object without expanding its internal step.
-      <td>TB-02
-      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-document-modelcontext">WebMCP — Document.modelContext</a>
-     <tr>
       <td>PO-02
-      <td>L0 + L1
+      <td>L0
       <td>Process
       <td>PO-02 Document / Origin Execution Context
       <td>Loaded page and origin-bound execution context that consumes remote resources, performs runtime Web communication, calls Web APIs, exposes tools, and executes page-authored tool behavior.
-      <td>TB-02; TB-03
+      <td>TB-01; TB-02
       <td><a href="https://www.w3.org/TR/threat-model-web/#sandboxed-web-content-execution-and-rendering">Threat Model for the Web — Sandboxed web-content execution and rendering</a>
      <tr>
       <td>PO-03
-      <td>L0 + L1
+      <td>L0
       <td>Process
       <td>PO-03 AI Agent Orchestrator
       <td>Agent process that receives a user goal and exposed tools, selects or formulates a tool call, receives the return payload, and produces a final response.
-      <td>TB-04
-      <td><a href="https://webmachinelearning.github.io/webmcp/#agent">WebMCP — agent</a>
+      <td>TB-03
+      <td><a href="https://webmachinelearning.github.io/webmcp/#agent">WebMCP — agent</a>, <a href="https://webmachinelearning.github.io/webmcp/#browsers-agent">browser’s agent</a>, and <a href="https://webmachinelearning.github.io/webmcp/#observations">page observations</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
      <tr>
       <td>DS-01
-      <td>L0 + L1
+      <td>L0
       <td>Data Store
-      <td>DS-01 Manifest / Tool Store
+      <td>DS-01 ModelContext Tool Map
       <td>Document-associated <code>ModelContext</code> tool-map state containing registered tool definitions across algorithm activations.
-      <td>TB-02; TB-03
-      <td><a href="https://webmachinelearning.github.io/webmcp/#model-context-tool-map">WebMCP — model context tool map</a>
+      <td>TB-01; TB-02
+      <td><a href="https://webmachinelearning.github.io/webmcp/#model-context-tool-map">WebMCP — model context tool map</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
      <tr>
       <td>DS-02
-      <td>L0 + L1
+      <td>L0
       <td>Data Store
       <td>DS-02 Pending Tool Executions Map
-      <td>Traversable-scoped map of in-flight tool executions containing caller document, target document, tool name, and completion steps; browser-authoritative state outside any individual Document event loop.
-      <td>TB-02
-      <td><a href="https://webmachinelearning.github.io/webmcp/#pending-tool-executions">WebMCP — Pending tool executions</a>
+      <td>Traversable-scoped map of in-flight <code>executeTool()</code> executions containing caller document, target document, tool name, and completion steps. It appears only in L0-IP; browser-agent invocation state is omitted at L0 and introduced as implementation-defined <code>DS-03</code> in L1-BI.
+      <td>TB-01
+      <td><a href="https://webmachinelearning.github.io/webmcp/#pending-tool-executions">WebMCP — Pending tool executions</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
    </table>
-   <h4 class="heading settled" data-level="2.3.2" id="trust-boundaries"><span class="secno">2.3.2. </span><span class="content">Trust boundaries</span><a class="self-link" href="#trust-boundaries"></a></h4>
+   <h4 class="heading settled" data-level="2.2.4" id="l0-trust-boundaries"><span class="secno">2.2.4. </span><span class="content">L0 Trust Boundaries</span><a class="self-link" href="#l0-trust-boundaries"></a></h4>
    <table class="data">
     <thead>
      <tr>
@@ -699,36 +694,28 @@ This distinction also frames the threat model. Some threats are inherent to agen
       <td>TB-01
       <td>L0
       <td>Trust Boundary
-      <td>TB-01 User Boundary
-      <td>Boundary between human intent and browser- or agent-controlled processing.
+      <td>TB-01 Web User Agent Boundary
+      <td>Outer Web user-agent boundary containing browser-controlled algorithms, nested document/origin contexts, and the nested agent responsibility boundary represented at L0.
       <td>
       <td><a href="https://www.w3.org/TR/threat-model-web/#trust-boundaries">Threat Model for the Web — Trust boundaries</a>
      <tr>
       <td>TB-02
-      <td>L0 + L1
+      <td>L0
       <td>Trust Boundary
-      <td>TB-02 User Agent Boundary
-      <td>Retained L0 boundary containing the user-agent algorithms and nested document/origin contexts touched by this L1.
-      <td>
-      <td><a href="https://www.w3.org/TR/threat-model-web/#trust-boundaries">Threat Model for the Web — Trust boundaries</a>
-     <tr>
-      <td>TB-03
-      <td>L0 + L1
-      <td>Trust Boundary
-      <td>TB-03 Web Context Isolation Boundaries
+      <td>TB-02 Web Context Isolation Boundaries
       <td>Retained L0 boundary family for document/origin authority and event-loop execution contexts.
-      <td>TB-02
+      <td>TB-01
       <td><a href="https://www.w3.org/TR/threat-model-web/#sandboxed-web-content-execution-and-rendering">Threat Model for the Web — Sandboxed web-content execution and rendering</a>
      <tr>
-      <td>TB-04
-      <td>L0 + L1
+      <td>TB-03
+      <td>L0
       <td>Trust Boundary
-      <td>TB-04 Agent Boundary
-      <td>Retained L0 logical responsibility boundary for browser-agent observation and invocation integration.
-      <td>
-      <td><a href="https://webmachinelearning.github.io/webmcp/#browsers-agent">WebMCP — browser’s agent</a>
+      <td>TB-03 AI Agent Boundary
+      <td>Logical AI-agent responsibility boundary. It is nested in TB-01 for the browser-integrated view and in TB-02 for the author-provided in-page view; in the latter it is not necessarily a browser-enforced isolation boundary.
+      <td>TB-01 (browser-integrated); TB-02 (in-page)
+      <td><a href="https://webmachinelearning.github.io/webmcp/#agent">WebMCP — agent</a>, <a href="https://webmachinelearning.github.io/webmcp/#browsers-agent">browser’s agent</a>, and <a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-gettools"><code>getTools()</code></a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
    </table>
-   <h4 class="heading settled" data-level="2.3.3" id="data-flows"><span class="secno">2.3.3. </span><span class="content">Data Flows</span><a class="self-link" href="#data-flows"></a></h4>
+   <h4 class="heading settled" data-level="2.2.5" id="l0-data-flows"><span class="secno">2.2.5. </span><span class="content">L0 Data Flows</span><a class="self-link" href="#l0-data-flows"></a></h4>
    <table class="data">
     <thead>
      <tr>
@@ -773,46 +760,6 @@ This distinction also frames the threat model. Some threats are inherent to agen
       <td>Requests, submitted payloads, and connection data sent by the document context to the remote Web site or service.
       <td><a href="https://www.w3.org/TR/threat-model-web/#flows">Threat Model for the Web — Browser flows</a>
      <tr>
-      <td>DF-05
-      <td>L0
-      <td>DF-05 Web API Request
-      <td>PO-02
-      <td>PO-01
-      <td>Generic Web API call, options, arguments, or control request sent from the document context to browser-controlled API processing.
-      <td><a href="https://www.w3.org/TR/threat-model-web/#flows">Threat Model for the Web — Browser flows</a>
-     <tr>
-      <td>DF-05.1
-      <td>L1
-      <td>DF-05.1 Discovery Request / fromOrigins
-      <td>PO-02
-      <td>PO-01.2
-      <td>Macro getTools() request carrying optional origin filtering; validation and iteration remain inside the algorithm and its L2 decomposition.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-gettools">WebMCP — getTools()</a>
-     <tr>
-      <td>DF-05.2
-      <td>L1
-      <td>DF-05.2 ModelContext Access
-      <td>PO-02
-      <td>PO-01.9
-      <td>Access to Document.modelContext that invokes the named getter algorithm.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-document-modelcontext">WebMCP — Document.modelContext</a>
-     <tr>
-      <td>DF-05.3
-      <td>L1
-      <td>DF-05.3 Document Lifecycle Trigger
-      <td>PO-02
-      <td>PO-01.7
-      <td>Document destruction or unloading input that activates the cleanup entry algorithm; pending-map mechanics remain in L2.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#pending-tool-executions">WebMCP — Pending tool executions</a>
-     <tr>
-      <td>DF-05.4
-      <td>L1
-      <td>DF-05.4 In-page Tool Call
-      <td>PO-02
-      <td>PO-01.3
-      <td>Macro executeTool() request from page-authored or in-page agent code.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-executetool">WebMCP — executeTool()</a>
-     <tr>
       <td>DF-06
       <td>L0
       <td>DF-06 Web API Result / Event / Error
@@ -821,53 +768,13 @@ This distinction also frames the threat model. Some threats are inherent to agen
       <td>Generic return value, promise settlement, callback, event, status, or error delivered by browser-controlled API processing to the document context.
       <td><a href="https://www.w3.org/TR/threat-model-web/#flows">Threat Model for the Web — Browser flows</a>
      <tr>
-      <td>DF-06.6
-      <td>L1
-      <td>DF-06.6 Associated ModelContext
-      <td>PO-01.9
-      <td>PO-02
-      <td>The same associated ModelContext object returned by the getter algorithm.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#document-associated-modelcontext">WebMCP — associated ModelContext</a>
-     <tr>
-      <td>DF-06.7
-      <td>L1
-      <td>DF-06.7 Cleanup Cancellation / Completion
-      <td>PO-01.7
-      <td>PO-02
-      <td>Macro cancellation or completion effect delivered to the affected page after unloading cleanup; pending-map iteration remains in L2.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#pending-tool-executions">WebMCP — Pending tool executions</a>
-     <tr>
-      <td>DF-06.8
-      <td>L1
-      <td>DF-06.8 RegisteredTool Sequence
-      <td>PO-01.2
-      <td>PO-02
-      <td>Macro getTools() result delivered to the page caller; traversal, exposure filtering, dictionary construction, sorting, and settlement remain in L2.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-gettools">WebMCP — getTools()</a>
-     <tr>
-      <td>DF-06.9
-      <td>L1
-      <td>DF-06.9 In-page Return Payload
-      <td>PO-01.3
-      <td>PO-02
-      <td>Macro executeTool() completion delivered to the in-page caller; detailed completion and error branches remain in L2.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-executetool">WebMCP — executeTool()</a>
-     <tr>
       <td>DF-07
       <td>L0
       <td>DF-07 Tool Exposure / Registration Request
       <td>PO-02
       <td>PO-01
       <td>Page-authored WebMCP tool definition and registration or declarative exposure information sent from the document context to browser-controlled WebMCP processing.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-registertool">WebMCP — registerTool()</a>
-     <tr>
-      <td>DF-07.1
-      <td>L1
-      <td>DF-07.1 Tool Definition / Options
-      <td>PO-02
-      <td>PO-01.1
-      <td>ModelContextTool and ModelContextRegisterToolOptions are supplied by the document context.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-registertool">WebMCP — registerTool()</a>
+      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-registertool">WebMCP — registerTool()</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
      <tr>
       <td>DF-08
       <td>L0
@@ -875,47 +782,15 @@ This distinction also frames the threat model. Some threats are inherent to agen
       <td>PO-01
       <td>DS-01
       <td>Validated or normalized tool definition state written or updated in the document-scoped tool store.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#model-context-tool-map">WebMCP — model context tool map</a>
-     <tr>
-      <td>DF-08.1
-      <td>L1
-      <td>DF-08.1 Registered Tool State Write
-      <td>PO-01.1
-      <td>DS-01
-      <td>Registered tool definition written by registerTool() to the document-scoped tool map.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-registertool">WebMCP — registerTool()</a>
-     <tr>
-      <td>DF-08.4
-      <td>L1
-      <td>DF-08.4 Registered Tool State Read
-      <td>DS-01
-      <td>PO-01.2
-      <td>Registered tool state read by getTools(); this is the read half of L0 registered-tool-state exchange DF-08.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-gettools">WebMCP — getTools()</a>
+      <td><a href="https://webmachinelearning.github.io/webmcp/#model-context-tool-map">WebMCP — model context tool map</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
      <tr>
       <td>DF-09
       <td>L0
       <td>DF-09 Tools Exposed to Agent
       <td>DS-01
       <td>PO-03
-      <td>Registered tool definitions supplied through the browser-agent observation path to the AI Agent Orchestrator.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#perform-an-observation">WebMCP — Perform an observation</a>
-     <tr>
-      <td>DF-09.5
-      <td>L1
-      <td>DF-09.5 Tool Definitions for Observation
-      <td>DS-01
-      <td>PO-01.8
-      <td>Document tool definitions gathered into the observation’s document-keyed tool map.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#perform-an-observation">WebMCP — Perform an observation</a>
-     <tr>
-      <td>DF-09.6
-      <td>L1
-      <td>DF-09.6 Observation Tool Map
-      <td>PO-01.8
-      <td>PO-03
-      <td>Implementation-defined observation handoff containing at least the browser-agent tool map.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#observation-tool-map">WebMCP — observation tool map</a>
+      <td>Registered tool definitions supplied to the AI Agent Orchestrator through the browser-agent observation path or the in-page getTools() discovery path.
+      <td><a href="https://webmachinelearning.github.io/webmcp/#perform-an-observation">WebMCP — Perform an observation</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
      <tr>
       <td>DF-10
       <td>L0
@@ -923,7 +798,7 @@ This distinction also frames the threat model. Some threats are inherent to agen
       <td>EE-01
       <td>PO-03
       <td>User goal, prompt, or constraints supplied to the AI Agent Orchestrator.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#agent">WebMCP — agent</a>
+      <td><a href="https://webmachinelearning.github.io/webmcp/#agent">WebMCP — agent</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
      <tr>
       <td>DF-11
       <td>L0
@@ -931,7 +806,7 @@ This distinction also frames the threat model. Some threats are inherent to agen
       <td>PO-03
       <td>PO-01
       <td>Tool selection and invocation request formulated by the AI Agent Orchestrator and sent to browser-controlled WebMCP processing.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#interaction-with-agents">WebMCP — Interaction with agents</a>
+      <td><a href="https://webmachinelearning.github.io/webmcp/#interaction-with-agents">WebMCP — Interaction with agents</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
      <tr>
       <td>DF-12
       <td>L0
@@ -939,7 +814,7 @@ This distinction also frames the threat model. Some threats are inherent to agen
       <td>PO-01
       <td>PO-02
       <td>Browser-controlled dispatch of the selected tool into the tool-owning document’s imperative callback or declarative target.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#tool-execute-steps">WebMCP — tool execute steps</a>
+      <td><a href="https://webmachinelearning.github.io/webmcp/#tool-execute-steps">WebMCP — tool execute steps</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
      <tr>
       <td>DF-13
       <td>L0
@@ -947,7 +822,7 @@ This distinction also frames the threat model. Some threats are inherent to agen
       <td>PO-02
       <td>PO-01
       <td>Page-authored callback result, exception, declarative outcome, or failure returned from the document execution context to browser-controlled WebMCP processing.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#imperative-execute-steps">WebMCP — imperative execute steps</a>
+      <td><a href="https://webmachinelearning.github.io/webmcp/#imperative-execute-steps">WebMCP — imperative execute steps</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
      <tr>
       <td>DF-14
       <td>L0
@@ -955,7 +830,7 @@ This distinction also frames the threat model. Some threats are inherent to agen
       <td>PO-01
       <td>PO-03
       <td>Logical tool completion payload returned from browser-controlled WebMCP processing to the AI Agent Orchestrator.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#interaction-with-agents">WebMCP — Interaction with agents</a>
+      <td><a href="https://webmachinelearning.github.io/webmcp/#interaction-with-agents">WebMCP — Interaction with agents</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
      <tr>
       <td>DF-15
       <td>L0
@@ -963,7 +838,7 @@ This distinction also frames the threat model. Some threats are inherent to agen
       <td>PO-03
       <td>EE-01
       <td>Response produced by the AI Agent Orchestrator and presented to the user after tool processing.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#agent">WebMCP — agent</a>
+      <td><a href="https://webmachinelearning.github.io/webmcp/#agent">WebMCP — agent</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
      <tr>
       <td>DF-16
       <td>L0
@@ -971,7 +846,7 @@ This distinction also frames the threat model. Some threats are inherent to agen
       <td>PO-03
       <td>EE-03
       <td>Goal, selected page or tool context, and other implementation-defined inference input supplied by the AI Agent Orchestrator to the inference provider.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#ai-platform">WebMCP — AI platform</a>
+      <td><a href="https://webmachinelearning.github.io/webmcp/#ai-platform">WebMCP — AI platform</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
      <tr>
       <td>DF-17
       <td>L0
@@ -979,15 +854,357 @@ This distinction also frames the threat model. Some threats are inherent to agen
       <td>EE-03
       <td>PO-03
       <td>Model output, policy-relevant result, or tool-selection decision returned by the inference provider to the AI Agent Orchestrator.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#ai-platform">WebMCP — AI platform</a>
+      <td><a href="https://webmachinelearning.github.io/webmcp/#ai-platform">WebMCP — AI platform</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
      <tr>
       <td>DF-18
       <td>L0
       <td>DF-18 Pending Execution State Update
       <td>PO-01
       <td>DS-02
-      <td>Creation, update, completion removal, cancellation removal, or cleanup removal of an entry in the traversable-scoped pending tool executions map.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#pending-tool-executions">WebMCP — Pending tool executions</a>
+      <td>L0-IP only: creation, update, completion removal, cancellation removal, or cleanup removal of an entry in the traversable-scoped pending tool executions map.
+      <td><a href="https://webmachinelearning.github.io/webmcp/#pending-tool-executions">WebMCP — Pending tool executions</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+     <tr>
+      <td>DF-19
+      <td>L0
+      <td>DF-19 Pending Execution State / Lookup
+      <td>DS-02
+      <td>PO-01
+      <td>L0-IP only: lookup, scan, or selection of pending execution state used by <code>executeTool()</code> completion, cancellation, and document-unloading cleanup.
+      <td><a href="https://webmachinelearning.github.io/webmcp/#pending-tool-executions">WebMCP — Pending tool executions</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+   </table>
+   <h3 class="heading settled" data-level="2.3" id="l1-methods-level-deployment-views"><span class="secno">2.3. </span><span class="content">L1: Methods-Level Deployment Views</span><a class="self-link" href="#l1-methods-level-deployment-views"></a></h3>
+   <p>The L1 views use different invocation paths:</p>
+   <ul>
+    <li data-md>
+     <p>The author-provided in-page agent uses <code>getTools()</code> to discover tools and <code>executeTool()</code> to invoke them. Its <code>executeTool()</code> path uses the specification’s traversable-scoped pending tool executions map and unloading cleanup.</p>
+    <li data-md>
+     <p>The browser-integrated agent receives observations and invokes tools through a browser-controlled adapter.</p>
+   </ul>
+   <p>Registration and registered-tool state are shared.</p>
+   <h4 class="heading settled" data-level="2.3.1" id="l1-browser-integrated-agent"><span class="secno">2.3.1. </span><span class="content">Browser-integrated agent</span><a class="self-link" href="#l1-browser-integrated-agent"></a></h4>
+   <figure>
+    
+  <img alt="Vertical methods-level data-flow diagram for a browser-integrated agent, showing registration, observation, the browser-agent invocation adapter, target dispatch, result routing, and implementation-defined Actor invocation state." height="1355" src="images/webmcp-l1-methods-level.svg" width="1280">
+  
+    <figcaption>L1-BI: browser-integrated observation and invocation</figcaption>
+   </figure>
+   <h4 class="heading settled" data-level="2.3.2" id="l1-author-provided-in-page-agent"><span class="secno">2.3.2. </span><span class="content">Author-provided in-page agent</span><a class="self-link" href="#l1-author-provided-in-page-agent"></a></h4>
+   <figure>
+    
+  <img alt="Vertical methods-level data-flow diagram for an author-provided in-page agent, showing registration, getTools, executeTool, target dispatch, result routing, pending executions, and cleanup." height="2258" src="images/webmcp-l1-in-page-agent.svg" width="1772">
+  
+    <figcaption>L1-IP: in-page discovery and invocation</figcaption>
+   </figure>
+   <h4 class="heading settled" data-level="2.3.3" id="l1-elements"><span class="secno">2.3.3. </span><span class="content">L1 Elements</span><a class="self-link" href="#l1-elements"></a></h4>
+   <table class="data">
+    <thead>
+     <tr>
+      <th scope="col">ID
+      <th scope="col">Level
+      <th scope="col">Type
+      <th scope="col">Label
+      <th scope="col">Description
+      <th scope="col">Trust Boundary
+      <th scope="col">Evidence Source
+    <tbody>
+     <tr>
+      <td>DS-01
+      <td>L1
+      <td>Data Store
+      <td>DS-01 ModelContext Tool Map
+      <td>Document-associated <code>ModelContext</code> tool-map state containing registered tool definitions across algorithm activations.
+      <td>TB-01; TB-02
+      <td><a href="https://webmachinelearning.github.io/webmcp/#model-context-tool-map">WebMCP — model context tool map</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+     <tr>
+      <td>DS-02
+      <td>L1
+      <td>Data Store
+      <td>DS-02 Pending Tool Executions Map
+      <td>Specification-defined traversable-scoped state for in-page <code>executeTool()</code> invocations and unloading cleanup. It appears only in L1-IP and is distinct from Chromium Actor state.
+      <td>TB-01
+      <td><a href="https://webmachinelearning.github.io/webmcp/#pending-tool-executions">WebMCP — Pending tool executions</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+     <tr>
+      <td>DS-03
+      <td>L1
+      <td>Data Store
+      <td>DS-03 Browser-agent Invocation State
+      <td>Implementation-defined Chromium Actor state for an in-flight browser-agent ScriptTool invocation, including lifecycle, callback, execution identity, target document, and timeout state. It is distinct from the specification’s traversable-scoped pending tool executions map.
+      <td>TB-01
+      <td>Chromium <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/chrome/browser/actor/tools/script_tool_host.cc#L129-L173">ScriptTool invocation state setup</a> and <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/chrome/browser/actor/tools/script_tool_host.cc#L188-L209">cancellation lifecycle</a> <a data-link-type="biblio" href="#biblio-chromium-5e23c6a" title="Chromium WebMCP implementation snapshot 5e23c6a">[CHROMIUM-5E23C6A]</a>
+     <tr>
+      <td>PO-01.1
+      <td>L1
+      <td>Process
+      <td>PO-01.1 registerTool
+      <td>Named ModelContext registration algorithm promoted as a candidate process without expanding its numbered steps.
+      <td>TB-01
+      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-registertool">WebMCP — registerTool()</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+     <tr>
+      <td>PO-01.2
+      <td>L1
+      <td>Process
+      <td>PO-01.2 getTools
+      <td>Named discovery algorithm that traverses eligible documents, applies policy and exposure rules, constructs RegisteredTool values, sorts them, and settles the caller promise.
+      <td>TB-01
+      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-gettools">WebMCP — getTools()</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+     <tr>
+      <td>PO-01.3
+      <td>L1
+      <td>Process
+      <td>PO-01.3 executeTool
+      <td>Named in-page invocation algorithm that validates caller and target context, creates pending execution state, dispatches execution, and settles the caller promise.
+      <td>TB-01
+      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-executetool">WebMCP — executeTool()</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+     <tr>
+      <td>PO-01.7
+      <td>L1
+      <td>Process
+      <td>PO-01.7 Unloading Document Cleanup
+      <td>In-page deployment algorithm that removes or completes specification-defined pending <code>executeTool()</code> executions associated with a destroyed caller or target document. It appears only in L1-IP.
+      <td>TB-01
+      <td><a href="https://webmachinelearning.github.io/webmcp/#pending-tool-executions">WebMCP — Pending tool executions</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+     <tr>
+      <td>PO-01.8
+      <td>L1
+      <td>Process
+      <td>PO-01.8 Perform an Observation
+      <td>Named non-normative example algorithm that constructs a document-keyed tool map and exposes the observation to the browser agent through an implementation-defined mechanism.
+      <td>TB-01
+      <td><a href="https://webmachinelearning.github.io/webmcp/#perform-an-observation">WebMCP — Perform an observation</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+     <tr>
+      <td>PO-01.9
+      <td>L1
+      <td>Process
+      <td>PO-01.9 Document.modelContext Getter
+      <td>Named Web API entry algorithm that returns the Document’s associated ModelContext object without expanding its internal step.
+      <td>TB-01
+      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-document-modelcontext">WebMCP — Document.modelContext</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+     <tr>
+      <td>PO-01.10
+      <td>L1
+      <td>Process
+      <td>PO-01.10 Browser-agent Invocation Adapter
+      <td>Implementation-defined browser-controlled path that accepts a browser-agent tool call, dispatches it to the tool-owning document, and returns completion or failure.
+      <td>TB-01
+      <td><a href="https://webmachinelearning.github.io/webmcp/#interaction-with-agents">WebMCP — Interaction with agents</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>; Chromium <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/chrome/browser/devtools/protocol/webmcp_browsertest.cc#L92-L156">feature-gated Actor-to-ScriptTool integration test</a> and <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/script_tools/model_context.cc#L904-L921">renderer dispatch adapter</a> <a data-link-type="biblio" href="#biblio-chromium-5e23c6a" title="Chromium WebMCP implementation snapshot 5e23c6a">[CHROMIUM-5E23C6A]</a>
+     <tr>
+      <td>PO-02
+      <td>L1
+      <td>Process
+      <td>PO-02 Document / Origin Execution Context
+      <td>Loaded page and origin-bound execution context that consumes remote resources, performs runtime Web communication, calls Web APIs, exposes tools, and executes page-authored tool behavior.
+      <td>TB-01; TB-02
+      <td><a href="https://www.w3.org/TR/threat-model-web/#sandboxed-web-content-execution-and-rendering">Threat Model for the Web — Sandboxed web-content execution and rendering</a>
+     <tr>
+      <td>PO-03
+      <td>L1
+      <td>Process
+      <td>PO-03 AI Agent Orchestrator
+      <td>Agent process that receives a user goal and exposed tools, selects or formulates a tool call, receives the return payload, and produces a final response.
+      <td>TB-03
+      <td><a href="https://webmachinelearning.github.io/webmcp/#agent">WebMCP — agent</a>, <a href="https://webmachinelearning.github.io/webmcp/#browsers-agent">browser’s agent</a>, and <a href="https://webmachinelearning.github.io/webmcp/#observations">page observations</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+   </table>
+   <h4 class="heading settled" data-level="2.3.4" id="l1-trust-boundaries"><span class="secno">2.3.4. </span><span class="content">L1 Trust Boundaries</span><a class="self-link" href="#l1-trust-boundaries"></a></h4>
+   <table class="data">
+    <thead>
+     <tr>
+      <th scope="col">ID
+      <th scope="col">Level
+      <th scope="col">Type
+      <th scope="col">Label
+      <th scope="col">Description
+      <th scope="col">Trust Boundary
+      <th scope="col">Source
+    <tbody>
+     <tr>
+      <td>TB-01
+      <td>L1
+      <td>Trust Boundary
+      <td>TB-01 Web User Agent Boundary
+      <td>Outer Web user-agent boundary containing browser-controlled algorithms, nested document/origin contexts, and the nested agent responsibility boundary represented in each deployment view.
+      <td>
+      <td><a href="https://www.w3.org/TR/threat-model-web/#trust-boundaries">Threat Model for the Web — Trust boundaries</a>
+     <tr>
+      <td>TB-02
+      <td>L1
+      <td>Trust Boundary
+      <td>TB-02 Web Context Isolation Boundaries
+      <td>Retained L0 boundary family for document/origin authority and event-loop execution contexts.
+      <td>TB-01
+      <td><a href="https://www.w3.org/TR/threat-model-web/#sandboxed-web-content-execution-and-rendering">Threat Model for the Web — Sandboxed web-content execution and rendering</a>
+     <tr>
+      <td>TB-03
+      <td>L1
+      <td>Trust Boundary
+      <td>TB-03 AI Agent Boundary
+      <td>Logical AI-agent responsibility boundary. It is nested in TB-01 for the browser-integrated view and in TB-02 for the author-provided in-page view; in the latter it is not necessarily a browser-enforced isolation boundary.
+      <td>TB-01 (browser-integrated); TB-02 (in-page)
+      <td><a href="https://webmachinelearning.github.io/webmcp/#agent">WebMCP — agent</a>, <a href="https://webmachinelearning.github.io/webmcp/#browsers-agent">browser’s agent</a>, and <a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-gettools"><code>getTools()</code></a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+   </table>
+   <h4 class="heading settled" data-level="2.3.5" id="l1-data-flows"><span class="secno">2.3.5. </span><span class="content">L1 Data Flows</span><a class="self-link" href="#l1-data-flows"></a></h4>
+   <table class="data">
+    <thead>
+     <tr>
+      <th scope="col">ID
+      <th scope="col">Level
+      <th scope="col">Label
+      <th scope="col">From
+      <th scope="col">To
+      <th scope="col">Description
+      <th scope="col">Source
+    <tbody>
+     <tr>
+      <td>DF-05.1
+      <td>L1
+      <td>DF-05.1 Discovery Request / fromOrigins
+      <td>PO-03
+      <td>PO-01.2
+      <td>Macro getTools() request from an author-provided agent running as script in the caller document or iframe, carrying optional origin filtering; validation and iteration are defined by the referenced getTools() algorithm.
+      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-gettools">WebMCP — getTools()</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+     <tr>
+      <td>DF-05.2
+      <td>L1
+      <td>DF-05.2 ModelContext Access
+      <td>PO-02
+      <td>PO-01.9
+      <td>Access to Document.modelContext that invokes the named getter algorithm.
+      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-document-modelcontext">WebMCP — Document.modelContext</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+     <tr>
+      <td>DF-05.3
+      <td>L1
+      <td>DF-05.3 Document Lifecycle Trigger
+      <td>PO-02
+      <td>PO-01.7
+      <td>Document destruction or unloading input that activates the cleanup entry algorithm; pending-map mechanics are defined by the referenced cleanup algorithm.
+      <td><a href="https://webmachinelearning.github.io/webmcp/#pending-tool-executions">WebMCP — Pending tool executions</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+     <tr>
+      <td>DF-05.4
+      <td>L1
+      <td>DF-05.4 In-page Tool Call
+      <td>PO-03
+      <td>PO-01.3
+      <td>Macro executeTool() request from an author-provided agent running as script in the caller document or iframe.
+      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-executetool">WebMCP — executeTool()</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+     <tr>
+      <td>DF-06.6
+      <td>L1
+      <td>DF-06.6 Associated ModelContext
+      <td>PO-01.9
+      <td>PO-02
+      <td>The same associated ModelContext object returned by the getter algorithm.
+      <td><a href="https://webmachinelearning.github.io/webmcp/#document-associated-modelcontext">WebMCP — associated ModelContext</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+     <tr>
+      <td>DF-06.7
+      <td>L1
+      <td>DF-06.7 Cleanup Cancellation / Completion
+      <td>PO-01.7
+      <td>PO-02
+      <td>Macro cancellation or completion effect delivered to the affected page after unloading cleanup; pending-map iteration is defined by the referenced cleanup algorithm.
+      <td><a href="https://webmachinelearning.github.io/webmcp/#pending-tool-executions">WebMCP — Pending tool executions</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+     <tr>
+      <td>DF-06.8
+      <td>L1
+      <td>DF-06.8 RegisteredTool Sequence
+      <td>PO-01.2
+      <td>PO-03
+      <td>Macro getTools() result delivered to the author-provided in-page agent; traversal, exposure filtering, dictionary construction, sorting, and settlement are defined by the referenced getTools() algorithm.
+      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-gettools">WebMCP — getTools()</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+     <tr>
+      <td>DF-06.9
+      <td>L1
+      <td>DF-06.9 In-page Return Payload
+      <td>PO-01.3
+      <td>PO-03
+      <td>Macro executeTool() completion delivered to the author-provided in-page agent; completion and error branches are defined by the referenced executeTool() and tool-execute algorithms.
+      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-executetool">WebMCP — executeTool()</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+     <tr>
+      <td>DF-07.1
+      <td>L1
+      <td>DF-07.1 Tool Definition / Options
+      <td>PO-02
+      <td>PO-01.1
+      <td>ModelContextTool and ModelContextRegisterToolOptions are supplied by the document context.
+      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-registertool">WebMCP — registerTool()</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+     <tr>
+      <td>DF-08.1
+      <td>L1
+      <td>DF-08.1 Registered Tool State Write
+      <td>PO-01.1
+      <td>DS-01
+      <td>Registered tool definition written by registerTool() to the document-scoped tool map.
+      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-registertool">WebMCP — registerTool()</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+     <tr>
+      <td>DF-08.4
+      <td>L1
+      <td>DF-08.4 Registered Tool State Read
+      <td>DS-01
+      <td>PO-01.2
+      <td>Registered tool state read by getTools(); this is the read half of L0 registered-tool-state exchange DF-08.
+      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-gettools">WebMCP — getTools()</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+     <tr>
+      <td>DF-09.5
+      <td>L1
+      <td>DF-09.5 Tool Definitions for Observation
+      <td>DS-01
+      <td>PO-01.8
+      <td>Document tool definitions gathered into the observation’s document-keyed tool map.
+      <td><a href="https://webmachinelearning.github.io/webmcp/#perform-an-observation">WebMCP — Perform an observation</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+     <tr>
+      <td>DF-09.6
+      <td>L1
+      <td>DF-09.6 Observation Tool Map
+      <td>PO-01.8
+      <td>PO-03
+      <td>Implementation-defined observation handoff containing at least the browser-agent tool map.
+      <td><a href="https://webmachinelearning.github.io/webmcp/#observation-tool-map">WebMCP — observation tool map</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+     <tr>
+      <td>DF-11.1
+      <td>L1
+      <td>DF-11.1 Browser-agent Tool Call
+      <td>PO-03
+      <td>PO-01.10
+      <td>Tool name and structured arguments selected by the browser-integrated agent and passed to the browser-controlled invocation adapter.
+      <td><a href="https://webmachinelearning.github.io/webmcp/#interaction-with-agents">WebMCP — Interaction with agents</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>; Chromium <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/chrome/browser/devtools/protocol/webmcp_browsertest.cc#L121-L156">Actor tool call and result test</a> <a data-link-type="biblio" href="#biblio-chromium-5e23c6a" title="Chromium WebMCP implementation snapshot 5e23c6a">[CHROMIUM-5E23C6A]</a>
+     <tr>
+      <td>DF-12.1
+      <td>L1
+      <td>DF-12.1 Browser-agent Tool Dispatch
+      <td>PO-01.10
+      <td>PO-02
+      <td>Browser-controlled dispatch of the selected tool and arguments to the tool-owning document.
+      <td><a href="https://webmachinelearning.github.io/webmcp/#tool-execute-steps">WebMCP — tool execute steps</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>; Chromium <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/script_tools/model_context.cc#L904-L921">renderer dispatch adapter</a> <a data-link-type="biblio" href="#biblio-chromium-5e23c6a" title="Chromium WebMCP implementation snapshot 5e23c6a">[CHROMIUM-5E23C6A]</a>
+     <tr>
+      <td>DF-12.2
+      <td>L1
+      <td>DF-12.2 In-page Target Tool Dispatch
+      <td>PO-01.3
+      <td>PO-02
+      <td>Dispatch from executeTool() to the selected tool-owning document after caller, target, origin, and exposure checks.
+      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-executetool">WebMCP — executeTool()</a> and <a href="https://webmachinelearning.github.io/webmcp/#tool-execute-steps">tool execute steps</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+     <tr>
+      <td>DF-13.1
+      <td>L1
+      <td>DF-13.1 Browser-agent Tool Output / Failure
+      <td>PO-02
+      <td>PO-01.10
+      <td>Tool result, exception, declarative outcome, or failure returned to the browser-controlled invocation adapter.
+      <td><a href="https://webmachinelearning.github.io/webmcp/#tool-execute-steps">WebMCP — tool execute steps</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+     <tr>
+      <td>DF-13.2
+      <td>L1
+      <td>DF-13.2 In-page Tool Output / Failure
+      <td>PO-02
+      <td>PO-01.3
+      <td>Tool result or failure returned from the tool-owning document to executeTool().
+      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-executetool">WebMCP — executeTool()</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+     <tr>
+      <td>DF-14.1
+      <td>L1
+      <td>DF-14.1 Browser-agent Return Payload
+      <td>PO-01.10
+      <td>PO-03
+      <td>Completion status and result returned to the browser-integrated agent.
+      <td><a href="https://webmachinelearning.github.io/webmcp/#interaction-with-agents">WebMCP — Interaction with agents</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>; Chromium adapter and result probes <a data-link-type="biblio" href="#biblio-chromium-5e23c6a" title="Chromium WebMCP implementation snapshot 5e23c6a">[CHROMIUM-5E23C6A]</a>
      <tr>
       <td>DF-18.1
       <td>L1
@@ -995,7 +1212,7 @@ This distinction also frames the threat model. Some threats are inherent to agen
       <td>PO-01.3
       <td>DS-02
       <td><code>executeTool()</code> creates the pending-execution entry and its completion steps remove the entry after success or failure.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-executetool">WebMCP — executeTool()</a>
+      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-executetool">WebMCP — executeTool()</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
      <tr>
       <td>DF-18.2
       <td>L1
@@ -1003,15 +1220,15 @@ This distinction also frames the threat model. Some threats are inherent to agen
       <td>PO-01.7
       <td>DS-02
       <td>Unloading-document cleanup removes pending entries whose caller or target document is being unloaded and invokes failed completion where required.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#pending-tool-executions">WebMCP — Pending tool executions</a>
+      <td><a href="https://webmachinelearning.github.io/webmcp/#pending-tool-executions">WebMCP — Pending tool executions</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
      <tr>
-      <td>DF-19
-      <td>L0
-      <td>DF-19 Pending Execution State / Lookup
-      <td>DS-02
-      <td>PO-01
-      <td>Lookup, scan, or selection of pending execution state used by execution completion, cancellation, and document-unloading cleanup.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#pending-tool-executions">WebMCP — Pending tool executions</a>
+      <td>DF-18.3
+      <td>L1
+      <td>DF-18.3 Browser-agent Invocation State Update
+      <td>PO-01.10
+      <td>DS-03
+      <td>Creation or transition of implementation-defined Chromium Actor state for a browser-agent-initiated ScriptTool invocation.
+      <td>Chromium <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/chrome/browser/actor/tools/script_tool_host.cc#L129-L173">ScriptToolHost invocation and lifecycle state</a> <a data-link-type="biblio" href="#biblio-chromium-5e23c6a" title="Chromium WebMCP implementation snapshot 5e23c6a">[CHROMIUM-5E23C6A]</a>
      <tr>
       <td>DF-19.1
       <td>L1
@@ -1019,7 +1236,7 @@ This distinction also frames the threat model. Some threats are inherent to agen
       <td>DS-02
       <td>PO-01.3
       <td><code>executeTool()</code> completion checks whether the keyed pending execution still exists before removing it and settling the caller promise.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-executetool">WebMCP — executeTool()</a>
+      <td><a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-executetool">WebMCP — executeTool()</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
      <tr>
       <td>DF-19.2
       <td>L1
@@ -1027,313 +1244,376 @@ This distinction also frames the threat model. Some threats are inherent to agen
       <td>DS-02
       <td>PO-01.7
       <td>Unloading-document cleanup scans and selects pending executions associated with the unloading caller or target document.
-      <td><a href="https://webmachinelearning.github.io/webmcp/#pending-tool-executions">WebMCP — Pending tool executions</a>
+      <td><a href="https://webmachinelearning.github.io/webmcp/#pending-tool-executions">WebMCP — Pending tool executions</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
+     <tr>
+      <td>DF-19.3
+      <td>L1
+      <td>DF-19.3 Browser-agent Invocation State / Lookup
+      <td>DS-03
+      <td>PO-01.10
+      <td>Implementation-defined Chromium Actor lifecycle, target, callback, and timeout state read by the browser-agent invocation path.
+      <td>Chromium <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/chrome/browser/actor/tools/script_tool_host.cc#L188-L209">ScriptToolHost lifecycle and cancellation</a> <a data-link-type="biblio" href="#biblio-chromium-5e23c6a" title="Chromium WebMCP implementation snapshot 5e23c6a">[CHROMIUM-5E23C6A]</a>
+   </table>
+   <h4 class="heading settled" data-level="2.3.6" id="mapping"><span class="secno">2.3.6. </span><span class="content">Mapping</span><a class="self-link" href="#mapping"></a></h4>
+   <table class="data">
+    <thead>
+     <tr>
+      <th scope="col">L0 element or exchange
+      <th scope="col">L1 representation
+      <th scope="col">Deployment relationship
+    <tbody>
+     <tr>
+      <td><code>PO-01 Web Browser</code>
+      <td><code>PO-01.1</code>, <code>PO-01.2</code>, <code>PO-01.3</code>, <code>PO-01.7</code>, <code>PO-01.8</code>, <code>PO-01.9</code>, and <code>PO-01.10</code>
+      <td>Shared browser processing is decomposed; <code>getTools()</code>/<code>executeTool()</code> are in-page, while observation/browser-agent invocation are browser-integrated.
+     <tr>
+      <td><code>PO-02</code>, <code>PO-03</code>, <code>DS-01</code>, <code>DS-02</code>
+      <td><code>PO-02</code>, <code>PO-03</code>, and <code>DS-01</code> retain their IDs in both views; <code>DS-02</code> is retained only in L1-IP, while implementation-defined <code>DS-03</code> is introduced only in L1-BI.
+      <td><code>PO-03</code> changes boundary placement. The specification’s pending map and Chromium Actor invocation state remain separate deployment-specific stores.
+     <tr>
+      <td><code>TB-01</code>, <code>TB-02</code>, <code>TB-03</code>
+      <td>Retained with the same IDs
+      <td><code>TB-03</code> is nested in <code>TB-01</code> for browser-integrated views and in <code>TB-02</code> for in-page views.
+     <tr>
+      <td><code>DF-07</code> and <code>DF-08</code>
+      <td><code>DF-07.1</code>, <code>DF-08.1</code>, and <code>DF-08.4</code>
+      <td>Registration is shared; the store read is used by the relevant discovery or observation path.
+     <tr>
+      <td><code>DF-09</code>
+      <td>L1-BI: <code>DF-09.5</code>/<code>DF-09.6</code>; L1-IP: <code>DF-05.1</code>/<code>DF-06.8</code> with <code>DF-08.4</code>
+      <td>Observation for the browser agent; direct API discovery for the in-page agent.
+     <tr>
+      <td><code>DF-11</code> through <code>DF-14</code>
+      <td>L1-BI: <code>DF-11.1</code>, <code>DF-12.1</code>, <code>DF-13.1</code>, <code>DF-14.1</code>; L1-IP: <code>DF-05.4</code>, <code>DF-12.2</code>, <code>DF-13.2</code>, <code>DF-06.9</code>
+      <td>Browser-controlled adapter versus page-facing <code>executeTool()</code>.
+     <tr>
+      <td><code>DF-18</code> and <code>DF-19</code>
+      <td><code>DF-18.1</code>/<code>DF-19.1</code> and <code>DF-18.2</code>/<code>DF-19.2</code> use <code>DS-02</code>; implementation-specific <code>DF-18.3</code>/<code>DF-19.3</code> use <code>DS-03</code>
+      <td>The specification’s in-page execution and cleanup state is kept distinct from Chromium Actor browser-agent invocation state.
    </table>
    <h3 class="heading settled" data-level="2.4" id="what-can-go-wrong"><span class="secno">2.4. </span><span class="content">What can go wrong?</span><a class="self-link" href="#what-can-go-wrong"></a></h3>
    <p>The threat table records findings from the data-flow diagrams.</p>
-   <table class="data">
+   <table class="data threat-table">
     <thead>
      <tr>
       <th scope="col">ID
       <th scope="col">Applicability
       <th scope="col">What can go wrong
-      <th scope="col">Level
       <th scope="col">L0 Elements / DFs
       <th scope="col">L1 Elements / DFs
       <th scope="col">Security Considerations status
-      <th scope="col">Mapping status
+      <th scope="col">Current DFD coverage
       <th scope="col">Evidence source
     <tbody>
      <tr>
       <td><code>T-01</code>
       <td>MCP-style tool mediation; WebMCP-specific
       <td>Page-authored tool metadata injects instructions or misleading semantics into agent context.
-      <td>L0 + L1
       <td>Elements: <code>PO-02</code>, <code>PO-01</code>, <code>DS-01</code>, <code>PO-03</code> DFs: <code>DF-07</code>, <code>DF-08</code>, <code>DF-09</code>
-      <td>Elements: <code>PO-02</code>, <code>PO-01.1</code>, <code>DS-01</code>, <code>PO-01.8</code>, <code>PO-03</code> DFs: <code>DF-07.1</code>, <code>DF-08.1</code>, <code>DF-09.5</code>, <code>DF-09.6</code>
-      <td>Tracked — explicit metadata/description attack section.
-      <td>Direct at L0 and L1.
-      <td>Spec: <a href="https://webmachinelearning.github.io/webmcp/#metadata-description-attacks">metadata/description attacks</a>; Chromium implementation review; GitHub: <a href="https://github.com/victorhuangwq/webmcp/blob/security-and-privacy-questionnaire/security-privacy-questionnaire.md">security and privacy questionnaire</a>; blog/report: <a href="https://layerxsecurity.com/blog/bioshocking-ai-gaming-the-ai-browser-and-escaping-its-guardrails/">Paz 2026</a>
+      <td>Elements: <code>PO-02</code>, <code>PO-01.1</code>, <code>DS-01</code>, <code>PO-01.2</code>, <code>PO-01.8</code>, <code>PO-03</code> DFs: registration <code>DF-07.1</code>, <code>DF-08.1</code>; in-page discovery <code>DF-08.4</code>, <code>DF-05.1</code>, <code>DF-06.8</code>; browser observation <code>DF-09.5</code>, <code>DF-09.6</code>
+      <td class="threat-status-tracked">Tracked — explicit metadata/description attack section.
+      <td>Direct at L0 and in both L1 deployment views.
+      <td>Spec: <a href="https://webmachinelearning.github.io/webmcp/#metadata-description-attacks">metadata/description attacks</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>; Chromium: <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/script_tools/model_context.cc#L1027-L1075">tool observation assembly</a> and <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc#L122-L235">declarative schema construction</a> <a data-link-type="biblio" href="#biblio-chromium-5e23c6a" title="Chromium WebMCP implementation snapshot 5e23c6a">[CHROMIUM-5E23C6A]</a>; GitHub: <a data-link-type="biblio" href="#biblio-webmcp-spq" title="WebMCP Self-Review Questionnaire: Security and Privacy">security and privacy questionnaire</a>; blog/report: <a data-link-type="biblio" href="#biblio-paz-bioshocking" title="BioShocking AI: Gaming the AI Browser and Escaping its Guardrails">Paz 2026</a>
      <tr>
       <td><code>T-02</code>
       <td>MCP-style tool mediation; WebMCP-specific
       <td>Untrusted tool output is treated as instructions and changes subsequent agent behavior.
-      <td>L0 + L1
       <td>Elements: <code>PO-02</code>, <code>PO-01</code>, <code>PO-03</code> DFs: <code>DF-13</code>, <code>DF-14</code>
-      <td>Elements: <code>PO-02</code>, <code>PO-01.3</code> DFs: <code>DF-05.4</code>, <code>DF-06.9</code>
-      <td>Modify — output injection is explicit, but the page-authored hint should be identified as advisory rather than enforcement.
-      <td>Partial: L1 shows the public in-page call/result shell; tool output reaching the browser agent is represented only at L0 and belongs in execution L2.
-      <td>Spec: <a href="https://webmachinelearning.github.io/webmcp/#output-injection-attacks">output injection</a> and <a href="https://webmachinelearning.github.io/webmcp/#mitigation-untrusted-annotation">untrusted response annotation</a>; Chromium implementation review; GitHub: <a href="https://github.com/victorhuangwq/webmcp/blob/security-and-privacy-questionnaire/security-privacy-questionnaire.md">security and privacy questionnaire</a>; blog/report: <a href="https://layerxsecurity.com/blog/bioshocking-ai-gaming-the-ai-browser-and-escaping-its-guardrails/">Paz 2026</a>
+      <td>Elements: <code>PO-02</code>, <code>PO-03</code>, <code>PO-01.3</code>, <code>PO-01.10</code> DFs: in-page <code>DF-12.2</code>, <code>DF-13.2</code>, <code>DF-06.9</code>; browser-integrated <code>DF-12.1</code>, <code>DF-13.1</code>, <code>DF-14.1</code>
+      <td class="threat-status-modify">Modify — output injection is explicit, but the page-authored hint should be identified as advisory rather than enforcement.
+      <td>Direct in both L1 deployment views through the <code>executeTool()</code> and browser-agent invocation result paths.
+      <td>Spec: <a href="https://webmachinelearning.github.io/webmcp/#output-injection-attacks">output injection</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a> and <a href="https://webmachinelearning.github.io/webmcp/#mitigation-untrusted-annotation">untrusted response annotation</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>; Chromium: <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/script_tools/model_context.cc#L855-L873">tool-result handoff</a> and <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/script_tools/model_context.cc#L1027-L1055">observation handoff</a> <a data-link-type="biblio" href="#biblio-chromium-5e23c6a" title="Chromium WebMCP implementation snapshot 5e23c6a">[CHROMIUM-5E23C6A]</a>; GitHub: <a data-link-type="biblio" href="#biblio-webmcp-spq" title="WebMCP Self-Review Questionnaire: Security and Privacy">security and privacy questionnaire</a>; blog/report: <a data-link-type="biblio" href="#biblio-paz-bioshocking" title="BioShocking AI: Gaming the AI Browser and Escaping its Guardrails">Paz 2026</a>
      <tr>
       <td><code>T-03</code>
       <td>Agentic navigation; WebMCP-specific
       <td>A consequential action bypasses or diverges from the normal human-facing UI path.
-      <td>L0 + L1
-      <td>Elements: <code>EE-01</code>, <code>PO-03</code>, <code>PO-01</code>, <code>PO-02</code>, <code>EE-02</code>, <code>TB-01</code> DFs: <code>DF-11</code>, <code>DF-12</code>, <code>DF-04</code>
-      <td>Elements: <code>PO-02</code>, <code>PO-01.3</code> DFs: <code>DF-05.4</code>
-      <td>Modify — intent mismatch is explicit; add user-mediation and side-effect semantics across invocation paths.
-      <td>Partial: target execution, server-side effect, and user mediation remain L2/L0 concerns.
-      <td>Spec: <a href="https://webmachinelearning.github.io/webmcp/#misrepresentation-of-intent">misrepresentation of intent</a> and <a href="https://webmachinelearning.github.io/webmcp/#scenario-ambiguous-finalization">ambiguous finalization</a>; Chromium implementation review; GitHub: <a href="https://github.com/webmachinelearning/webmcp/issues/44">issue #44</a>
+      <td>Elements: <code>EE-01</code>, <code>PO-03</code>, <code>PO-01</code>, <code>PO-02</code>, <code>EE-02</code> DFs: <code>DF-11</code>, <code>DF-12</code>, <code>DF-04</code>
+      <td><strong>Elements:</strong><br><code>PO-03</code>, <code>PO-02</code>, <code>PO-01.3</code>, <code>PO-01.10</code><br><strong>DFs:</strong><br><strong>in-page:</strong> <code>DF-05.4</code>, <code>DF-12.2</code><br><strong>browser-integrated:</strong> <code>DF-11.1</code>, <code>DF-12.1</code>
+      <td class="threat-status-modify">Modify — intent mismatch is explicit; add user-mediation and side-effect semantics across invocation paths.
+      <td>Partial: target execution and user mediation are represented by the tool-execute and declarative-execution algorithms; the remote service effect remains an L0 concern.
+      <td>Spec: <a href="https://webmachinelearning.github.io/webmcp/#misrepresentation-of-intent">misrepresentation of intent</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a> and <a href="https://webmachinelearning.github.io/webmcp/#scenario-ambiguous-finalization">ambiguous finalization</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>; Chromium: <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/html/forms/html_form_element.cc#L175-L185">declarative execution entry</a> and <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/html/forms/html_form_element.cc#L200-L221">user-mediation and autosubmit branch</a> <a data-link-type="biblio" href="#biblio-chromium-5e23c6a" title="Chromium WebMCP implementation snapshot 5e23c6a">[CHROMIUM-5E23C6A]</a>; GitHub: <a data-link-type="biblio" href="#biblio-webmcp-issue-44" title="Managing action specific permissions">issue #44</a>
      <tr>
       <td><code>T-04</code>
       <td>Agentic navigation; MCP-style tool mediation; WebMCP-specific
       <td>An over-parameterized tool causes unnecessary disclosure of user or contextual data.
-      <td>L0 + L1
       <td>Elements: <code>PO-02</code>, <code>PO-01</code>, <code>DS-01</code>, <code>PO-03</code>, <code>EE-03</code> DFs: <code>DF-07</code>, <code>DF-08</code>, <code>DF-09</code>, <code>DF-16</code>
-      <td>Elements: <code>PO-02</code>, <code>PO-01.1</code>, <code>DS-01</code>, <code>PO-01.8</code>, <code>PO-03</code> DFs: <code>DF-07.1</code>, <code>DF-08.1</code>, <code>DF-09.5</code>, <code>DF-09.6</code>
-      <td>Tracked — explicit over-parameterization section.
-      <td>Direct through exposure to the agent; disclosure to the inference provider is visible only at L0.
-      <td>Spec: <a href="https://webmachinelearning.github.io/webmcp/#privacy-leakage-over-parameterization">over-parameterization</a>; Chromium implementation review; GitHub: <a href="https://github.com/victorhuangwq/webmcp/blob/security-and-privacy-questionnaire/security-privacy-questionnaire.md">security and privacy questionnaire</a>
+      <td>Elements: <code>PO-02</code>, <code>PO-01.1</code>, <code>DS-01</code>, <code>PO-01.2</code>, <code>PO-01.8</code>, <code>PO-03</code> DFs: registration <code>DF-07.1</code>, <code>DF-08.1</code>; in-page discovery <code>DF-08.4</code>, <code>DF-05.1</code>, <code>DF-06.8</code>; browser observation <code>DF-09.5</code>, <code>DF-09.6</code>
+      <td class="threat-status-tracked">Tracked — explicit over-parameterization section.
+      <td>Direct through exposure to the agent in both L1 deployment views; disclosure to the inference provider is visible only at L0.
+      <td>Spec: <a href="https://webmachinelearning.github.io/webmcp/#privacy-leakage-over-parameterization">over-parameterization</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>; Chromium: <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc#L734-L770">schema generation for selectable values</a> and <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc#L1271-L1307">control-type classification used for schema construction</a> <a data-link-type="biblio" href="#biblio-chromium-5e23c6a" title="Chromium WebMCP implementation snapshot 5e23c6a">[CHROMIUM-5E23C6A]</a>; GitHub: <a data-link-type="biblio" href="#biblio-webmcp-spq" title="WebMCP Self-Review Questionnaire: Security and Privacy">security and privacy questionnaire</a>
      <tr>
       <td><code>T-05</code>
       <td>Agentic navigation (WebMCP delivery)
       <td>A provider retains or reuses metadata, arguments, results, or context beyond the user-origin interaction.
-      <td>L0 + L1
-      <td>Elements: <code>PO-03</code>, <code>EE-03</code>, <code>TB-04</code> DFs: <code>DF-16</code>, <code>DF-17</code>; ingress via <code>DF-09</code>, <code>DF-14</code>
-      <td>Elements: <code>PO-03</code>, <code>TB-04</code> DFs: <code>DF-09.6</code>
-      <td>Add — provider transport, retention, memory, and responsibility boundaries are not addressed.
-      <td>Direct at L0; L1 shows only tool information entering the agent boundary, not provider transport or retention.
-      <td>Model/DFD inference; spec: <a href="https://webmachinelearning.github.io/webmcp/#agent-baseline-capabilities">agent baseline</a> and <a href="https://webmachinelearning.github.io/webmcp/#privacy-leakage-over-parameterization">over-parameterization</a>; vendor guidance: <a href="https://developer.chrome.com/docs/agents/security">agent security</a>; blog/report: <a href="https://layerxsecurity.com/blog/bioshocking-ai-gaming-the-ai-browser-and-escaping-its-guardrails/">Paz 2026</a>
+      <td>Elements: <code>PO-03</code>, <code>EE-03</code>, <code>TB-03</code> DFs: <code>DF-16</code>, <code>DF-17</code>; ingress via <code>DF-09</code>, <code>DF-14</code>
+      <td>Elements: <code>PO-03</code>, <code>TB-03</code>, <code>PO-01.2</code>, <code>PO-01.3</code>, <code>PO-01.8</code>, <code>PO-01.10</code> DFs: in-page <code>DF-05.1</code>, <code>DF-06.8</code>, <code>DF-05.4</code>, <code>DF-06.9</code>; browser-integrated <code>DF-09.6</code>, <code>DF-11.1</code>, <code>DF-14.1</code>
+      <td class="threat-status-add">Add — provider transport, retention, memory, and responsibility boundaries are not addressed.
+      <td>Direct at L0; L1 shows metadata, calls, and results crossing the agent boundary in both deployments, but not provider transport or retention.
+      <td>Model/DFD inference; spec: <a href="https://webmachinelearning.github.io/webmcp/#agent-baseline-capabilities">agent baseline</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a> and <a href="https://webmachinelearning.github.io/webmcp/#privacy-leakage-over-parameterization">over-parameterization</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>; vendor guidance: <a data-link-type="biblio" href="#biblio-chrome-agent-security" title="Agent security considerations for WebMCP">agent security</a>; blog/report: <a data-link-type="biblio" href="#biblio-paz-bioshocking" title="BioShocking AI: Gaming the AI Browser and Escaping its Guardrails">Paz 2026</a>
      <tr>
       <td><code>T-06</code>
       <td>WebMCP-specific
       <td>A tool is discovered or executed by an unintended document or origin.
-      <td>L0 + L1
-      <td>Elements: <code>PO-02</code>, <code>PO-01</code>, <code>DS-01</code>, <code>TB-03</code> DFs: <code>DF-05</code>, <code>DF-06</code>, <code>DF-07</code>, <code>DF-08</code>, <code>DF-12</code>, <code>DF-13</code>
-      <td>Elements: <code>PO-02</code>, <code>PO-01.1</code>, <code>PO-01.2</code>, <code>PO-01.3</code>, <code>DS-01</code>, <code>TB-03</code> DFs: <code>DF-07.1</code>, <code>DF-08.1</code>, <code>DF-05.1</code>, <code>DF-08.4</code>, <code>DF-06.8</code>, <code>DF-05.4</code>, <code>DF-06.9</code>
-      <td>Modify — the same-origin section is still a TODO; cover origin-wide delegation and frame or tenant-confused-deputy cases.
-      <td>Partial: the macro origin/context checks are visible, but caller/target selection and exposure gates belong in L2.
-      <td>Spec: <a href="https://webmachinelearning.github.io/webmcp/#tool-definition-exposed-origins">exposed origins</a> and <a href="https://webmachinelearning.github.io/webmcp/#violation-same-origin-boundaries">same-origin boundaries</a>; Chromium code/WPT review; GitHub: <a href="https://github.com/victorhuangwq/webmcp/blob/security-and-privacy-questionnaire/security-privacy-questionnaire.md">security and privacy questionnaire</a>; blog: <a href="https://www.earlence.com/blog.html#/post/webmcp-sameorigin">Fernandes 2026</a>
+      <td>Elements: <code>PO-02</code>, <code>PO-01</code>, <code>DS-01</code>, <code>TB-02</code> DFs: <code>DF-06</code>, <code>DF-07</code>, <code>DF-08</code>, <code>DF-12</code>, <code>DF-13</code>
+      <td>Elements: <code>PO-02</code>, <code>PO-03</code>, <code>PO-01.1</code>, <code>PO-01.2</code>, <code>PO-01.3</code>, <code>PO-01.8</code>, <code>PO-01.10</code>, <code>DS-01</code>, <code>TB-02</code> DFs: registration <code>DF-07.1</code>, <code>DF-08.1</code>; in-page discovery/invocation <code>DF-05.1</code>, <code>DF-08.4</code>, <code>DF-06.8</code>, <code>DF-05.4</code>, <code>DF-12.2</code>, <code>DF-13.2</code>, <code>DF-06.9</code>; browser observation/invocation <code>DF-09.5</code>, <code>DF-09.6</code>, <code>DF-11.1</code>, <code>DF-12.1</code>, <code>DF-13.1</code>, <code>DF-14.1</code>
+      <td class="threat-status-modify">Modify — the same-origin section is still a TODO; cover origin-wide delegation and frame or tenant-confused-deputy cases.
+      <td>Partial: the macro origin/context checks are visible; caller/target selection and exposure gates are defined by <code>getTools()</code>, <code>executeTool()</code>, and the tool-exposure algorithm.
+      <td>Spec: <a href="https://webmachinelearning.github.io/webmcp/#tool-definition-exposed-origins">exposed origins</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a> and <a href="https://webmachinelearning.github.io/webmcp/#violation-same-origin-boundaries">same-origin boundaries</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>; Chromium: <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/content/browser/renderer_host/model_context_user_data.cc#L172-L246">discovery and exposure checks</a>, <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/content/browser/renderer_host/model_context_user_data.cc#L248-L350">remote execution selection</a>, and <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/web_tests/external/wpt/webmcp/imperative/exposedTo-cross-origin-child.https.html">cross-origin-child WPT</a> <a data-link-type="biblio" href="#biblio-chromium-5e23c6a" title="Chromium WebMCP implementation snapshot 5e23c6a">[CHROMIUM-5E23C6A]</a>; GitHub: <a data-link-type="biblio" href="#biblio-webmcp-spq" title="WebMCP Self-Review Questionnaire: Security and Privacy">security and privacy questionnaire</a>; blog: <a data-link-type="biblio" href="#biblio-fernandes-webmcp-sameorigin" title="Breaking Origin Isolation without Breaking the Browser">Fernandes 2026</a>
      <tr>
       <td><code>T-07</code>
       <td>Agentic navigation; WebMCP-specific
       <td>Missing or ambiguous provenance causes a tool or invocation to be attributed to the wrong document, frame, origin, or party.
-      <td>L0 + L1
       <td>Elements: <code>PO-02</code>, <code>PO-01</code>, <code>DS-01</code>, <code>DS-02</code>, <code>PO-03</code> DFs: <code>DF-09</code>, <code>DF-11</code>, <code>DF-12</code>, <code>DF-18</code>, <code>DF-19</code>
-      <td>Elements: <code>DS-01</code>, <code>DS-02</code>, <code>PO-01.2</code>, <code>PO-01.3</code>, <code>PO-01.8</code>, <code>PO-03</code> DFs: <code>DF-08.4</code>, <code>DF-06.8</code>, <code>DF-09.5</code>, <code>DF-09.6</code>, <code>DF-18.1</code>, <code>DF-19.1</code>
-      <td>Add — atomic provenance across observation, discovery, invocation, and user or agent UI is not addressed.
-      <td>Partial: discovery, observation, and caller/target execution state are visible; browser-agent invocation and target dispatch are absent from L1.
-      <td>Spec: <a href="https://webmachinelearning.github.io/webmcp/#observations">page observations</a> and <a href="https://webmachinelearning.github.io/webmcp/#misrepresentation-of-intent">misrepresentation of intent</a>; Chromium/CDP review; vendor guidance: <a href="https://developer.chrome.com/docs/agents/security">agent security</a>; blog: <a href="https://www.earlence.com/blog.html#/post/webmcp-sameorigin">Fernandes 2026</a>
+      <td>Elements: <code>PO-02</code>, <code>PO-03</code>, <code>PO-01.2</code>, <code>PO-01.3</code>, <code>PO-01.8</code>, <code>PO-01.10</code>, <code>DS-01</code>, <code>DS-02</code>, <code>DS-03</code> DFs: in-page <code>DF-08.4</code>, <code>DF-05.1</code>, <code>DF-06.8</code>, <code>DF-05.4</code>, <code>DF-12.2</code>, <code>DF-13.2</code>, <code>DF-06.9</code>, <code>DF-18.1</code>, <code>DF-19.1</code>; browser-integrated <code>DF-09.5</code>, <code>DF-09.6</code>, <code>DF-11.1</code>, <code>DF-12.1</code>, <code>DF-13.1</code>, <code>DF-14.1</code>, <code>DF-18.3</code>, <code>DF-19.3</code>
+      <td class="threat-status-add">Add — atomic provenance across observation, discovery, invocation, and user or agent UI is not addressed.
+      <td>Direct at the macro DFD level in both deployments: discovery or observation, invocation, target dispatch, result routing, and pending execution state are visible; atomic provenance checks remain algorithm- and implementation-specific.
+      <td>Spec: <a href="https://webmachinelearning.github.io/webmcp/#observations">page observations</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a> and <a href="https://webmachinelearning.github.io/webmcp/#misrepresentation-of-intent">misrepresentation of intent</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>; Chromium: <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/public/devtools_protocol/domains/WebMCP.pdl#L28-L77">DevTools protocol provenance fields</a> and <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/content/browser/devtools/protocol/webmcp_handler.cc#L58-L102">handler-side frame and origin handling</a> <a data-link-type="biblio" href="#biblio-chromium-5e23c6a" title="Chromium WebMCP implementation snapshot 5e23c6a">[CHROMIUM-5E23C6A]</a>; vendor guidance: <a data-link-type="biblio" href="#biblio-chrome-agent-security" title="Agent security considerations for WebMCP">agent security</a>; blog: <a data-link-type="biblio" href="#biblio-fernandes-webmcp-sameorigin" title="Breaking Origin Isolation without Breaking the Browser">Fernandes 2026</a>
      <tr>
       <td><code>T-08</code>
       <td>MCP-style tool mediation; WebMCP-specific
       <td>The tool map changes between observation, discovery, and invocation, producing stale or name-confused behavior.
-      <td>L0 + L1
       <td>Elements: <code>PO-02</code>, <code>PO-01</code>, <code>DS-01</code>, <code>DS-02</code>, <code>PO-03</code> DFs: <code>DF-07</code>, <code>DF-08</code>, <code>DF-09</code>, <code>DF-11</code>, <code>DF-12</code>, <code>DF-18</code>, <code>DF-19</code>
-      <td>Elements: <code>PO-02</code>, <code>PO-01.1</code>, <code>PO-01.2</code>, <code>PO-01.3</code>, <code>PO-01.7</code>, <code>DS-01</code>, <code>DS-02</code> DFs: <code>DF-07.1</code>, <code>DF-08.1</code>, <code>DF-08.4</code>, <code>DF-05.1</code>, <code>DF-06.8</code>, <code>DF-05.4</code>, <code>DF-05.3</code>, <code>DF-06.7</code>, <code>DF-18.1</code>, <code>DF-19.1</code>, <code>DF-18.2</code>, <code>DF-19.2</code>
-      <td>Add — freshness, generation binding, replacement, abort, and navigation lifecycle are not addressed.
-      <td>Direct at macro lifecycle and pending-state level; ordering and race mechanics belong in L2.
-      <td>Paper: <a href="https://arxiv.org/abs/2606.06387">Lee et al. 2026</a>; spec: <a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-registertool"><code>registerTool()</code> signal steps</a>
+      <td>Elements: <code>PO-02</code>, <code>PO-03</code>, <code>PO-01.1</code>, <code>PO-01.2</code>, <code>PO-01.3</code>, <code>PO-01.7</code>, <code>PO-01.8</code>, <code>PO-01.10</code>, <code>DS-01</code>, <code>DS-02</code>, <code>DS-03</code> DFs: registration <code>DF-07.1</code>, <code>DF-08.1</code>; in-page discovery/invocation/lifecycle <code>DF-08.4</code>, <code>DF-05.1</code>, <code>DF-06.8</code>, <code>DF-05.4</code>, <code>DF-12.2</code>, <code>DF-05.3</code>, <code>DF-06.7</code>, <code>DF-18.1</code>, <code>DF-19.1</code>, <code>DF-18.2</code>, <code>DF-19.2</code>; browser observation/invocation <code>DF-09.5</code>, <code>DF-09.6</code>, <code>DF-11.1</code>, <code>DF-12.1</code>, <code>DF-18.3</code>, <code>DF-19.3</code>
+      <td class="threat-status-add">Add — freshness, generation binding, replacement, abort, and navigation lifecycle are not addressed.
+      <td>Direct at macro lifecycle and pending-state level; ordering and race mechanics are defined by <code>registerTool()</code>, unregistration, cleanup, and tool-execution algorithms.
+      <td>Paper: <a data-link-type="biblio" href="#biblio-lee-webmcp-poisoning" title="WebMCP Tool Surface Poisoning: Runtime Manipulation Attacks on LLM Agents">Lee et al. 2026</a>; spec: <a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-registertool"><code>registerTool()</code> signal steps</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
      <tr>
       <td><code>T-09</code>
       <td>WebMCP-specific
       <td>Abort, navigation, unregister, or unload rejects the caller but fails to cancel target work or effects.
-      <td>L0 + L1
-      <td>Elements: <code>PO-02</code>, <code>PO-01</code>, <code>DS-02</code>, <code>TB-03</code> DFs: <code>DF-12</code>, <code>DF-13</code>, <code>DF-06</code>, <code>DF-18</code>, <code>DF-19</code>
-      <td>Elements: <code>PO-02</code>, <code>PO-01.3</code>, <code>PO-01.7</code>, <code>DS-02</code> DFs: <code>DF-05.4</code>, <code>DF-06.9</code>, <code>DF-05.3</code>, <code>DF-06.7</code>, <code>DF-18.1</code>, <code>DF-19.1</code>, <code>DF-18.2</code>, <code>DF-19.2</code>
-      <td>Add — caller-to-target cancellation and residual target effects are not addressed.
-      <td>Direct at the macro state-lifecycle level; cancellation races, abort propagation, and residual target effects belong in L2 or implementation views.
-      <td>Spec and Chromium implementation review; source-derived finding: <a href="https://webmachinelearning.github.io/webmcp/#model-context-unregister-a-tool">unregister a tool</a>
+      <td>Elements: <code>PO-02</code>, <code>PO-01</code>, <code>DS-02</code>, <code>TB-02</code> DFs: <code>DF-12</code>, <code>DF-13</code>, <code>DF-06</code>, <code>DF-18</code>, <code>DF-19</code>
+      <td>Elements: <code>PO-02</code>, <code>PO-03</code>, <code>PO-01.3</code>, <code>PO-01.7</code>, <code>PO-01.10</code>, <code>DS-02</code>, <code>DS-03</code> DFs: in-page <code>DF-05.4</code>, <code>DF-12.2</code>, <code>DF-13.2</code>, <code>DF-06.9</code>, <code>DF-05.3</code>, <code>DF-06.7</code>, <code>DF-18.1</code>, <code>DF-19.1</code>, <code>DF-18.2</code>, <code>DF-19.2</code>; browser-integrated <code>DF-11.1</code>, <code>DF-12.1</code>, <code>DF-13.1</code>, <code>DF-14.1</code>, <code>DF-18.3</code>, <code>DF-19.3</code>
+      <td class="threat-status-add">Add — caller-to-target cancellation and residual target effects are not addressed.
+      <td>Direct at the macro state-lifecycle level; cancellation races, abort propagation, and residual target effects require the <code>executeTool()</code>, cleanup, and implementation-specific cancellation paths.
+      <td>Spec: <a href="https://webmachinelearning.github.io/webmcp/#model-context-unregister-a-tool">unregister a tool</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>; Chromium: <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/script_tools/model_context.cc#L576-L603">renderer cancellation</a> and <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/content/browser/renderer_host/model_context_user_data.cc#L464-L511">pending-execution cleanup</a> <a data-link-type="biblio" href="#biblio-chromium-5e23c6a" title="Chromium WebMCP implementation snapshot 5e23c6a">[CHROMIUM-5E23C6A]</a>
      <tr>
       <td><code>T-10</code>
       <td>Agentic navigation; MCP-style tool mediation; WebMCP-specific
       <td>Unbounded tools, metadata, observations, or pending calls exhaust browser, agent-context, provider, or user-attention resources.
-      <td>L0 + L1
       <td>Elements: <code>PO-02</code>, <code>PO-01</code>, <code>DS-01</code>, <code>DS-02</code>, <code>PO-03</code>, <code>EE-03</code> DFs: <code>DF-07</code>, <code>DF-08</code>, <code>DF-09</code>, <code>DF-11</code>, <code>DF-16</code>, <code>DF-18</code>, <code>DF-19</code>
-      <td>Elements: <code>PO-02</code>, <code>PO-01.1</code>, <code>PO-01.2</code>, <code>PO-01.3</code>, <code>PO-01.8</code>, <code>DS-01</code>, <code>DS-02</code>, <code>PO-03</code> DFs: <code>DF-07.1</code>, <code>DF-08.1</code>, <code>DF-08.4</code>, <code>DF-05.1</code>, <code>DF-05.4</code>, <code>DF-09.5</code>, <code>DF-09.6</code>, <code>DF-18.1</code>, <code>DF-19.1</code>
-      <td>Modify — an input-length mitigation exists; extend it to counts, sizes, pending calls, timeouts, and context pressure.
-      <td>Direct for registration, discovery, observation, and pending-execution accumulation; quota and bound enforcement remain L2 or implementation concerns.
-      <td>Spec and implementation/resource analysis: <a href="https://webmachinelearning.github.io/webmcp/#mitigation-restrict-input-lengths">maximum input lengths</a>; paper: <a href="https://arxiv.org/abs/2505.06643">Cui and Zuo 2025</a>; vendor guidance: <a href="https://developer.chrome.com/docs/ai/webmcp/secure-tools">WebMCP tool security</a>
+      <td>Elements: <code>PO-02</code>, <code>PO-03</code>, <code>PO-01.1</code>, <code>PO-01.2</code>, <code>PO-01.3</code>, <code>PO-01.8</code>, <code>PO-01.10</code>, <code>DS-01</code>, <code>DS-02</code>, <code>DS-03</code> DFs: registration <code>DF-07.1</code>, <code>DF-08.1</code>; in-page <code>DF-08.4</code>, <code>DF-05.1</code>, <code>DF-06.8</code>, <code>DF-05.4</code>, <code>DF-18.1</code>, <code>DF-19.1</code>; browser-integrated <code>DF-09.5</code>, <code>DF-09.6</code>, <code>DF-11.1</code>, <code>DF-18.3</code>, <code>DF-19.3</code>
+      <td class="threat-status-modify">Modify — an input-length mitigation exists; extend it to counts, sizes, pending calls, timeouts, and context pressure.
+      <td>Direct for registration, discovery, observation, and pending-execution accumulation; quota and bound enforcement remain algorithm- or implementation-specific concerns.
+      <td>Spec and implementation/resource analysis: <a href="https://webmachinelearning.github.io/webmcp/#mitigation-restrict-input-lengths">maximum input lengths</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>; paper: <a data-link-type="biblio" href="#biblio-cui-zuo-ria" title="Practical Reasoning Interruption Attacks on Reasoning Large Language Models">Cui and Zuo 2025</a>; vendor guidance: <a data-link-type="biblio" href="#biblio-chrome-webmcp-security" title="WebMCP tool security">WebMCP tool security</a>
      <tr>
       <td><code>T-11</code>
       <td>WebMCP-specific
-      <td>Imperative execution accepts arguments or results that do not conform to the advertised schema.
-      <td>L0 + L1
+      <td>Imperative execution accepts arguments that do not conform to the advertised input schema, or returns values without a declared output schema.
       <td>Elements: <code>PO-02</code>, <code>PO-01</code>, <code>DS-01</code> DFs: <code>DF-07</code>, <code>DF-08</code>, <code>DF-09</code>, <code>DF-12</code>, <code>DF-13</code>
-      <td>Elements: <code>PO-02</code>, <code>PO-01.1</code>, <code>DS-01</code>, <code>PO-01.2</code>, <code>PO-01.3</code> DFs: <code>DF-07.1</code>, <code>DF-08.1</code>, <code>DF-08.4</code>, <code>DF-06.8</code>, <code>DF-05.4</code>, <code>DF-06.9</code>
-      <td>Add — imperative schema-validation responsibility and root-type mismatch are not addressed.
-      <td>Partial: schema-bearing paths are visible; validation and callback execution belong in L2.
-      <td>Spec/implementation divergence: <a href="https://webmachinelearning.github.io/webmcp/#tool-definition-input-schema">input schema</a>; Chromium code and <a href="https://chromium-review.googlesource.com/c/chromium/src/+/8248081">open CL 8248081</a>; external standard: <a href="https://json-schema.org/draft/2020-12/json-schema-core.html">JSON Schema 2020-12</a>
+      <td>Elements: <code>PO-02</code>, <code>PO-03</code>, <code>PO-01.1</code>, <code>PO-01.2</code>, <code>PO-01.3</code>, <code>PO-01.8</code>, <code>PO-01.10</code>, <code>DS-01</code> DFs: registration/discovery <code>DF-07.1</code>, <code>DF-08.1</code>, <code>DF-08.4</code>, <code>DF-06.8</code>, <code>DF-09.5</code>, <code>DF-09.6</code>; in-page invocation/result <code>DF-05.4</code>, <code>DF-12.2</code>, <code>DF-13.2</code>, <code>DF-06.9</code>; browser-integrated invocation/result <code>DF-11.1</code>, <code>DF-12.1</code>, <code>DF-13.1</code>, <code>DF-14.1</code>
+      <td class="threat-status-add">Add — imperative input-schema validation responsibility, root-type mismatch, and the absence or scope of an output schema are not addressed.
+      <td>Partial: input-schema-bearing paths are visible; input validation, callback execution, and output-schema handling are assessed against <code>registerTool()</code>, <code>getTools()</code>, <code>executeTool()</code>, and the imperative execute steps.
+      <td>Pinned-snapshot IDL divergence, resolved by <a data-link-type="biblio" href="#biblio-chromium-cl-8248081" title="Chromium change 8248081: Expose RegisteredTool.inputSchema as an object">merged CL 8248081</a>; input-schema enforcement and output-schema gaps remain. Spec: <a href="https://webmachinelearning.github.io/webmcp/#tool-definition-input-schema">input schema</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>; Chromium: <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/script_tools/model_context.cc#L749-L800">imperative argument parsing and callback invocation</a>, <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/script_tools/model_context_tool.idl#L14-L32">tool contract</a> <a data-link-type="biblio" href="#biblio-chromium-5e23c6a" title="Chromium WebMCP implementation snapshot 5e23c6a">[CHROMIUM-5E23C6A]</a>; external standard: <a data-link-type="biblio" href="#biblio-json-schema" title="JSON Schema: A Media Type for Describing JSON Documents">JSON Schema 2020-12</a>
      <tr>
       <td><code>T-12</code>
       <td>WebMCP-specific
       <td>Declarative schema generation, field filling, validation, and form behavior disagree.
-      <td>L0 + L1
       <td>Elements: <code>PO-02</code>, <code>PO-01</code>, <code>DS-01</code> DFs: <code>DF-07</code>, <code>DF-08</code>, <code>DF-12</code>, <code>DF-13</code>
-      <td>Elements: <code>PO-02</code>, <code>PO-01.1</code>, <code>DS-01</code>, <code>PO-01.3</code> DFs: <code>DF-07.1</code>, <code>DF-08.1</code>, <code>DF-05.4</code>, <code>DF-06.9</code>
-      <td>Add — declarative schema synthesis and filling security and privacy behavior is not yet covered.
-      <td>Partial: the declarative helper and field-level mechanics belong in L2.
-      <td>Spec: <a href="https://webmachinelearning.github.io/webmcp/#declarative-api">Declarative WebMCP</a> and <a href="https://webmachinelearning.github.io/webmcp/#synthesize-a-declarative-json-schema-object-algorithm">schema synthesis</a>; Chromium code/tests; GitHub: <a href="https://github.com/victorhuangwq/webmcp/blob/security-and-privacy-questionnaire/security-privacy-questionnaire.md">security and privacy questionnaire</a>
+      <td>Elements: <code>PO-02</code>, <code>PO-03</code>, <code>PO-01.1</code>, <code>PO-01.3</code>, <code>PO-01.10</code>, <code>DS-01</code> DFs: registration <code>DF-07.1</code>, <code>DF-08.1</code>; in-page invocation/result <code>DF-05.4</code>, <code>DF-12.2</code>, <code>DF-13.2</code>, <code>DF-06.9</code>; browser-integrated invocation/result <code>DF-11.1</code>, <code>DF-12.1</code>, <code>DF-13.1</code>, <code>DF-14.1</code>
+      <td class="threat-status-add">Add — declarative schema synthesis and filling security and privacy behavior is not yet covered.
+      <td>Partial: the declarative helper and field-level mechanics are defined by the schema-synthesis, field-filling, validation, and declarative-execution algorithms.
+      <td>Spec: <a href="https://webmachinelearning.github.io/webmcp/#declarative-api">Declarative WebMCP</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a> and <a href="https://webmachinelearning.github.io/webmcp/#synthesize-a-declarative-json-schema-object-algorithm">schema synthesis</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>; Chromium: <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc#L122-L235">schema synthesis</a>; tests: <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/html/forms/html_form_mcp_tool_test.cc#L382-L441">invalid-input and transactional-fill tests</a> and <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/html/forms/html_form_mcp_tool_test.cc#L511-L568">schema-generation tests</a> <a data-link-type="biblio" href="#biblio-chromium-5e23c6a" title="Chromium WebMCP implementation snapshot 5e23c6a">[CHROMIUM-5E23C6A]</a>; GitHub: <a data-link-type="biblio" href="#biblio-webmcp-spq" title="WebMCP Self-Review Questionnaire: Security and Privacy">security and privacy questionnaire</a>
      <tr>
       <td><code>T-13</code>
       <td>WebMCP-specific
       <td><code>toolautosubmit</code> creates a consequential effect without adequate user mediation.
-      <td>L0 + L1
-      <td>Elements: <code>EE-01</code>, <code>PO-03</code>, <code>PO-01</code>, <code>PO-02</code>, <code>EE-02</code>, <code>TB-01</code> DFs: <code>DF-11</code>, <code>DF-12</code>, <code>DF-04</code>
-      <td>Elements: <code>PO-02</code>, <code>PO-01.3</code> DFs: <code>DF-05.4</code>
-      <td>Modify — ambiguous finalization is tracked; add explicit autosubmit and pre-invocation mediation semantics.
-      <td>Partial: L1 contains only the public entry shell; the declarative/browser-agent execution path belongs in L2/L0.
-      <td>Spec: <a href="https://webmachinelearning.github.io/webmcp/#declarative-api">Declarative WebMCP</a> and <a href="https://webmachinelearning.github.io/webmcp/#scenario-ambiguous-finalization">ambiguous finalization</a>; Chromium implementation review; GitHub: <a href="https://github.com/webmachinelearning/webmcp/issues/44">issue #44</a>
+      <td>Elements: <code>EE-01</code>, <code>PO-03</code>, <code>PO-01</code>, <code>PO-02</code>, <code>EE-02</code> DFs: <code>DF-11</code>, <code>DF-12</code>, <code>DF-04</code>
+      <td><strong>Elements:</strong><br><code>PO-03</code>, <code>PO-02</code>, <code>PO-01.3</code>, <code>PO-01.10</code><br><strong>DFs:</strong><br><strong>in-page:</strong> <code>DF-05.4</code>, <code>DF-12.2</code><br><strong>browser-integrated:</strong> <code>DF-11.1</code>, <code>DF-12.1</code>
+      <td class="threat-status-modify">Modify — ambiguous finalization is tracked; add explicit autosubmit and pre-invocation mediation semantics.
+      <td>Partial: L1 shows both invocation shells; autosubmit and mediation semantics are defined by the declarative execute steps and the L0 remote-effect path.
+      <td>Spec: <a href="https://webmachinelearning.github.io/webmcp/#declarative-api">Declarative WebMCP</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a> and <a href="https://webmachinelearning.github.io/webmcp/#scenario-ambiguous-finalization">ambiguous finalization</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>; Chromium: <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/html/forms/html_form_element.cc#L175-L185">declarative execution entry</a> and <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/html/forms/html_form_element.cc#L200-L221">user-mediation and autosubmit branch</a> <a data-link-type="biblio" href="#biblio-chromium-5e23c6a" title="Chromium WebMCP implementation snapshot 5e23c6a">[CHROMIUM-5E23C6A]</a>; GitHub: <a data-link-type="biblio" href="#biblio-webmcp-issue-44" title="Managing action specific permissions">issue #44</a>
      <tr>
       <td><code>T-14</code>
       <td>WebMCP-specific (Chromium test-only path)
       <td>Automated filling or execution of a file input bypasses the file picker or equivalent user choice.
-      <td>L0 + L1
-      <td>Elements: <code>EE-01</code>, <code>PO-01</code>, <code>PO-02</code>, <code>EE-02</code>, <code>TB-01</code> DFs: <code>DF-12</code>, <code>DF-04</code>
-      <td>Elements: <code>PO-02</code>, <code>PO-01.3</code> DFs: <code>DF-05.4</code>
-      <td>Add before shipping — file selection, path probing, and autosubmit need dedicated privacy and security treatment.
+      <td>Elements: <code>EE-01</code>, <code>PO-01</code>, <code>PO-02</code>, <code>EE-02</code> DFs: <code>DF-12</code>, <code>DF-04</code>
+      <td><strong>Elements:</strong><br><code>PO-03</code>, <code>PO-02</code>, <code>PO-01.3</code>, <code>PO-01.10</code><br><strong>DFs:</strong><br><strong>in-page:</strong> <code>DF-05.4</code>, <code>DF-12.2</code><br><strong>browser-integrated:</strong> <code>DF-11.1</code>, <code>DF-12.1</code>
+      <td class="threat-status-add">Add before shipping — file selection, path probing, and autosubmit need dedicated privacy and security treatment.
       <td>Partial: the relevant field-filling path is implementation/test evidence and is not explicit in L1.
-      <td>Spec: <a href="https://webmachinelearning.github.io/webmcp/#declarative-api">Declarative WebMCP</a>; Chromium test-only path
+      <td>Spec: <a href="https://webmachinelearning.github.io/webmcp/#declarative-api">Declarative WebMCP</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>; Chromium: <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/platform/runtime_enabled_features.json5#L7057-L7059">test-only feature gate</a> and <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc#L1066-L1085">file-input fill path</a> <a data-link-type="biblio" href="#biblio-chromium-5e23c6a" title="Chromium WebMCP implementation snapshot 5e23c6a">[CHROMIUM-5E23C6A]</a>
      <tr>
       <td><code>T-15</code>
       <td>WebMCP-specific (Chromium experimental path)
       <td>A custom element receives unvalidated JSON or values outside its intended contract.
-      <td>L0 + L1
       <td>Elements: <code>PO-02</code>, <code>PO-01</code> DFs: <code>DF-12</code>, <code>DF-13</code>
-      <td>Elements: <code>PO-02</code>, <code>PO-01.3</code> DFs: <code>DF-05.4</code>, <code>DF-06.9</code>
-      <td>Add before shipping — custom-element schema enforcement or advisory semantics need coverage.
-      <td>Partial: element-specific conversion and callback mechanics belong in L2.
-      <td>Spec: <a href="https://webmachinelearning.github.io/webmcp/#declarative-api">Declarative WebMCP</a>; Chromium experimental implementation path; vendor guidance: <a href="https://developer.chrome.com/docs/ai/webmcp/secure-tools">WebMCP tool security</a>
+      <td>Elements: <code>PO-03</code>, <code>PO-02</code>, <code>PO-01.3</code>, <code>PO-01.10</code> DFs: in-page <code>DF-05.4</code>, <code>DF-12.2</code>, <code>DF-13.2</code>, <code>DF-06.9</code>; browser-integrated <code>DF-11.1</code>, <code>DF-12.1</code>, <code>DF-13.1</code>, <code>DF-14.1</code>
+      <td class="threat-status-add">Add before shipping — custom-element schema enforcement or advisory semantics need coverage.
+      <td>Partial: element-specific conversion and callback mechanics are defined by the declarative custom-element validation and callback path.
+      <td>Spec: <a href="https://webmachinelearning.github.io/webmcp/#declarative-api">Declarative WebMCP</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>; Chromium: <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc#L289-L293">validation TODO and unconditional acceptance</a> and <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc#L1057-L1065">custom-element JSON handoff</a> <a data-link-type="biblio" href="#biblio-chromium-5e23c6a" title="Chromium WebMCP implementation snapshot 5e23c6a">[CHROMIUM-5E23C6A]</a>; vendor guidance: <a data-link-type="biblio" href="#biblio-chrome-webmcp-security" title="WebMCP tool security">WebMCP tool security</a>
      <tr>
       <td><code>T-16</code>
       <td>WebMCP-specific
       <td>Result extraction returns unrelated JSON-LD or page content as the tool result.
-      <td>L0 + L1
       <td>Elements: <code>PO-02</code>, <code>PO-01</code>, <code>PO-03</code> DFs: <code>DF-13</code>, <code>DF-14</code>
-      <td>Elements: <code>PO-02</code>, <code>PO-01.3</code> DFs: <code>DF-06.9</code>
-      <td>Add — result-extraction scope and minimization are not addressed.
-      <td>Partial: extraction belongs in L2 and the result-to-agent path is visible only at L0.
-      <td>Spec: <a href="https://webmachinelearning.github.io/webmcp/#declarative-api">Declarative WebMCP</a> and <a href="https://webmachinelearning.github.io/webmcp/#privacy-leakage-over-parameterization">over-parameterization</a>; Chromium implementation review; GitHub: <a href="https://github.com/victorhuangwq/webmcp/blob/security-and-privacy-questionnaire/security-privacy-questionnaire.md">security and privacy questionnaire</a>
+      <td>Elements: <code>PO-02</code>, <code>PO-03</code>, <code>PO-01.3</code>, <code>PO-01.10</code> DFs: in-page <code>DF-13.2</code>, <code>DF-06.9</code>; browser-integrated <code>DF-13.1</code>, <code>DF-14.1</code>
+      <td class="threat-status-add">Add — result-extraction scope and minimization are not addressed.
+      <td>Partial: extraction is defined by the declarative result-extraction behavior; the result-to-agent path is now visible in both L1 deployment views.
+      <td>Spec: <a href="https://webmachinelearning.github.io/webmcp/#declarative-api">Declarative WebMCP</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a> and <a href="https://webmachinelearning.github.io/webmcp/#privacy-leakage-over-parameterization">over-parameterization</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>; Chromium: <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/script_tools/model_context.cc#L146-L205">declarative result extraction</a> <a data-link-type="biblio" href="#biblio-chromium-5e23c6a" title="Chromium WebMCP implementation snapshot 5e23c6a">[CHROMIUM-5E23C6A]</a>; GitHub: <a data-link-type="biblio" href="#biblio-webmcp-spq" title="WebMCP Self-Review Questionnaire: Security and Privacy">security and privacy questionnaire</a>
      <tr>
       <td><code>T-17</code>
       <td>Agentic navigation (WebMCP deployment)
       <td>Regular and private browsing contexts become linkable through agent or provider state.
-      <td>L0 + L1
-      <td>Elements: <code>EE-01</code>, <code>PO-03</code>, <code>EE-03</code>, <code>TB-03</code>, <code>TB-04</code> DFs: <code>DF-09</code>, <code>DF-14</code>, <code>DF-16</code>, <code>DF-17</code>
-      <td>Elements: <code>PO-01.8</code>, <code>PO-03</code>, <code>TB-03</code>, <code>TB-04</code> DFs: <code>DF-09.5</code>, <code>DF-09.6</code>
-      <td>Tracked — explicit private-browsing section.
+      <td>Elements: <code>EE-01</code>, <code>PO-03</code>, <code>EE-03</code>, <code>TB-02</code>, <code>TB-03</code> DFs: <code>DF-09</code>, <code>DF-14</code>, <code>DF-16</code>, <code>DF-17</code>
+      <td>Elements: <code>PO-03</code>, <code>PO-01.2</code>, <code>PO-01.3</code>, <code>PO-01.8</code>, <code>PO-01.10</code>, <code>DS-01</code>, <code>TB-02</code>, <code>TB-03</code> DFs: in-page <code>DF-05.1</code>, <code>DF-08.4</code>, <code>DF-06.8</code>, <code>DF-06.9</code>; browser-integrated <code>DF-09.5</code>, <code>DF-09.6</code>, <code>DF-14.1</code>
+      <td class="threat-status-tracked">Tracked — explicit private-browsing section.
       <td>Partial: context separation is modeled, but agent memory, provider state, and their partitioning are absent from L1.
-      <td>Model/DFD inference; spec: <a href="https://webmachinelearning.github.io/webmcp/#interaction-with-private-browsing">private browsing interaction</a>; GitHub: <a href="https://github.com/victorhuangwq/webmcp/blob/security-and-privacy-questionnaire/security-privacy-questionnaire.md">security and privacy questionnaire</a>; vendor guidance: <a href="https://developer.chrome.com/docs/agents/security">agent security</a>
+      <td>Model/DFD inference; spec: <a href="https://webmachinelearning.github.io/webmcp/#interaction-with-private-browsing">private browsing interaction</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>; GitHub: <a data-link-type="biblio" href="#biblio-webmcp-spq" title="WebMCP Self-Review Questionnaire: Security and Privacy">security and privacy questionnaire</a>; vendor guidance: <a data-link-type="biblio" href="#biblio-chrome-agent-security" title="Agent security considerations for WebMCP">agent security</a>
      <tr>
       <td><code>T-18</code>
       <td>WebMCP-specific
       <td>File or opaque-origin cases are interpreted inconsistently, weakening origin-based authority checks.
-      <td>L0 + L1
-      <td>Elements: <code>PO-02</code>, <code>PO-01</code>, <code>DS-01</code>, <code>TB-03</code> DFs: <code>DF-05</code>, <code>DF-06</code>, <code>DF-07</code>, <code>DF-08</code>, <code>DF-12</code>, <code>DF-13</code>
-      <td>Elements: <code>PO-02</code>, <code>PO-01.1</code>, <code>PO-01.2</code>, <code>PO-01.3</code>, <code>DS-01</code>, <code>TB-03</code> DFs: <code>DF-07.1</code>, <code>DF-08.1</code>, <code>DF-05.1</code>, <code>DF-08.4</code>, <code>DF-06.8</code>, <code>DF-05.4</code>, <code>DF-06.9</code>
-      <td>Add — local-file and opaque-origin principal, discovery, lifecycle, and disclosure semantics are not addressed.
-      <td>Direct at macro origin/context level; parse and rejection branches belong in L2.
-      <td>Spec/implementation analysis: <a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-registertool"><code>registerTool()</code></a>; <a href="https://chromium.googlesource.com/chromium/src/+/0e5ca7c2941fedec46511487298eddcc6c8f99a2/third_party/blink/renderer/core/loader/document_loader.cc#2566">Chromium file-origin code</a>
+      <td>Elements: <code>PO-02</code>, <code>PO-01</code>, <code>DS-01</code>, <code>TB-02</code> DFs: <code>DF-06</code>, <code>DF-07</code>, <code>DF-08</code>, <code>DF-12</code>, <code>DF-13</code>
+      <td>Elements: <code>PO-02</code>, <code>PO-03</code>, <code>PO-01.1</code>, <code>PO-01.2</code>, <code>PO-01.3</code>, <code>PO-01.8</code>, <code>PO-01.10</code>, <code>DS-01</code>, <code>TB-02</code> DFs: registration <code>DF-07.1</code>, <code>DF-08.1</code>; in-page discovery/invocation <code>DF-05.1</code>, <code>DF-08.4</code>, <code>DF-06.8</code>, <code>DF-05.4</code>, <code>DF-12.2</code>, <code>DF-13.2</code>, <code>DF-06.9</code>; browser observation/invocation <code>DF-09.5</code>, <code>DF-09.6</code>, <code>DF-11.1</code>, <code>DF-12.1</code>, <code>DF-13.1</code>, <code>DF-14.1</code>
+      <td class="threat-status-add">Add — local-file and opaque-origin principal, discovery, lifecycle, and disclosure semantics are not addressed.
+      <td>Direct at macro origin/context level; parse and rejection branches are defined by the registration, discovery, and execution algorithms.
+      <td>Spec/implementation analysis: <a href="https://webmachinelearning.github.io/webmcp/#dom-modelcontext-registertool"><code>registerTool()</code></a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>; <a href="https://chromium.googlesource.com/chromium/src/+/0e5ca7c2941fedec46511487298eddcc6c8f99a2/third_party/blink/renderer/core/loader/document_loader.cc#2566">Chromium file-origin code</a> <a data-link-type="biblio" href="#biblio-chromium-0e5ca7c" title="Chromium WebMCP implementation snapshot 0e5ca7c">[CHROMIUM-0E5CA7C]</a>
      <tr>
       <td><code>T-19</code>
       <td>Agentic navigation; WebMCP-specific
       <td>The system cannot establish who requested, authorized, performed, or observed an action.
-      <td>L0 + L1
-      <td>Elements: <code>EE-01</code>, <code>PO-03</code>, <code>PO-01</code>, <code>PO-02</code>, <code>EE-02</code>, <code>DS-02</code>, <code>TB-01</code> DFs: <code>DF-10</code>, <code>DF-11</code>, <code>DF-12</code>, <code>DF-13</code>, <code>DF-14</code>, <code>DF-04</code>, <code>DF-18</code>, <code>DF-19</code>
-      <td>Elements: <code>PO-02</code>, <code>PO-01.3</code>, <code>DS-02</code> DFs: <code>DF-05.4</code>, <code>DF-06.9</code>, <code>DF-18.1</code>, <code>DF-19.1</code>
-      <td>Modify — intent and blame are discussed; add request, authorization, actor, and effect attribution.
+      <td>Elements: <code>EE-01</code>, <code>PO-03</code>, <code>PO-01</code>, <code>PO-02</code>, <code>EE-02</code>, <code>DS-02</code> DFs: <code>DF-10</code>, <code>DF-11</code>, <code>DF-12</code>, <code>DF-13</code>, <code>DF-14</code>, <code>DF-04</code>, <code>DF-18</code>, <code>DF-19</code>
+      <td>Elements: <code>PO-02</code>, <code>PO-03</code>, <code>PO-01.3</code>, <code>PO-01.10</code>, <code>DS-02</code>, <code>DS-03</code> DFs: in-page <code>DF-05.4</code>, <code>DF-12.2</code>, <code>DF-13.2</code>, <code>DF-06.9</code>, <code>DF-18.1</code>, <code>DF-19.1</code>; browser-integrated <code>DF-11.1</code>, <code>DF-12.1</code>, <code>DF-13.1</code>, <code>DF-14.1</code>, <code>DF-18.3</code>, <code>DF-19.3</code>
+      <td class="threat-status-modify">Modify — intent and blame are discussed; add request, authorization, actor, and effect attribution.
       <td>Partial: L1 exposes caller, target, and tool-name execution state, but not the complete request-to-effect chain, authorization evidence, or durable audit state.
-      <td>Spec/model/implementation analysis: <a href="https://webmachinelearning.github.io/webmcp/#misrepresentation-of-intent">misrepresentation of intent</a>; GitHub: <a href="https://github.com/webmachinelearning/webmcp/issues/44">issue #44</a>
+      <td>Spec/model/implementation analysis: <a href="https://webmachinelearning.github.io/webmcp/#misrepresentation-of-intent">misrepresentation of intent</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>; GitHub: <a data-link-type="biblio" href="#biblio-webmcp-issue-44" title="Managing action specific permissions">issue #44</a>
      <tr>
       <td><code>T-20</code>
       <td>WebMCP-specific
       <td>Coarse or conflated errors hide security-relevant causes and impede safe recovery or diagnosis.
-      <td>L0 + L1
       <td>Elements: <code>PO-02</code>, <code>PO-01</code>, <code>PO-03</code>, <code>DS-02</code> DFs: <code>DF-06</code>, <code>DF-13</code>, <code>DF-14</code>, <code>DF-18</code>, <code>DF-19</code>
-      <td>Elements: <code>PO-02</code>, <code>PO-01.3</code>, <code>PO-01.7</code>, <code>DS-02</code> DFs: <code>DF-06.9</code>, <code>DF-06.7</code>, <code>DF-18.1</code>, <code>DF-19.1</code>, <code>DF-18.2</code>, <code>DF-19.2</code>
-      <td>Add — error taxonomy, diagnosability, and safe recovery are not addressed.
-      <td>Partial: pending-state completion and cleanup are visible, while detailed rejection and error-cause branches belong in L2.
-      <td>Spec and Chromium implementation review: <a href="https://webmachinelearning.github.io/webmcp/#intent-current-gaps">current gaps</a> and <a href="https://webmachinelearning.github.io/webmcp/#model-context-container">ModelContext interface</a>
+      <td>Elements: <code>PO-02</code>, <code>PO-03</code>, <code>PO-01.3</code>, <code>PO-01.7</code>, <code>PO-01.10</code>, <code>DS-02</code>, <code>DS-03</code> DFs: in-page result/lifecycle <code>DF-13.2</code>, <code>DF-06.9</code>, <code>DF-06.7</code>, <code>DF-18.1</code>, <code>DF-19.1</code>, <code>DF-18.2</code>, <code>DF-19.2</code>; browser-integrated result/lifecycle <code>DF-13.1</code>, <code>DF-14.1</code>, <code>DF-18.3</code>, <code>DF-19.3</code>
+      <td class="threat-status-add">Add — error taxonomy, diagnosability, and safe recovery are not addressed.
+      <td>Partial: pending-state completion and cleanup are visible; detailed rejection and error-cause branches are defined by <code>executeTool()</code>, tool-execute, and cleanup algorithms.
+      <td>Spec: <a href="https://webmachinelearning.github.io/webmcp/#intent-current-gaps">current gaps</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a> and <a href="https://webmachinelearning.github.io/webmcp/#model-context-container">ModelContext interface</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>; Chromium: <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/public/mojom/content_extraction/script_tools.mojom#L89-L96">completion error transport</a> and <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/script_tools/model_context.cc#L1178-L1203">renderer error collapsing</a> <a data-link-type="biblio" href="#biblio-chromium-5e23c6a" title="Chromium WebMCP implementation snapshot 5e23c6a">[CHROMIUM-5E23C6A]</a>
      <tr>
       <td><code>T-21</code>
       <td>WebMCP-specific (privileged Chromium tooling)
       <td>Sensitive arguments, results, or context leak through DevTools or diagnostic surfaces.
-      <td>L0
-      <td>Elements: <code>PO-01</code>, <code>PO-02</code>, <code>TB-02</code> as architectural context only DFs: —
+      <td>Elements: <code>PO-01</code>, <code>PO-02</code>, <code>TB-01</code> as architectural context only DFs: —
       <td>Elements: — DFs: —
       <td>Implementation-specific — no specification change is proposed unless diagnostic surfaces become part of WebMCP scope.
       <td>Model gap: the diagnostic actor/process and diagnostic data flows are absent; nearby execution flows are not substitutes.
-      <td>Implementation-specific Chromium Inspector/probe path: <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/frame/local_frame_mojo_handler.cc#L986-L1005">invocation</a>, <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/script_tools/model_context.cc#L524-L542">result</a>, and <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/script_tools/model_context.cc#L448-L455">failure</a>. This is a privileged path and does not demonstrate unprivileged access, log persistence, or an exploitable vulnerability; the spec <a href="https://webmachinelearning.github.io/webmcp/#security-privacy">Security and Privacy section</a> is contextual only.
+      <td>Implementation-specific Chromium Inspector/probe path: <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/frame/local_frame_mojo_handler.cc#L986-L1005">invocation</a>, <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/script_tools/model_context.cc#L855-L869">result</a>, and <a href="https://github.com/chromium/chromium/blob/5e23c6ae1d31e362dc5e4a8f492b6499a204602e/third_party/blink/renderer/core/script_tools/model_context.cc#L512-L519">failure</a> <a data-link-type="biblio" href="#biblio-chromium-5e23c6a" title="Chromium WebMCP implementation snapshot 5e23c6a">[CHROMIUM-5E23C6A]</a>. This is a privileged path and does not demonstrate unprivileged access, log persistence, or an exploitable vulnerability; the spec <a href="https://webmachinelearning.github.io/webmcp/#security-privacy">Security and Privacy section</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a> is contextual only.
      <tr>
       <td><code>T-22</code>
       <td>MCP-style tool mediation; WebMCP-specific
       <td>A compromised or unexpected third-party page script mutates the tool surface within the page’s existing authority.
-      <td>L0 + L1
       <td>Elements: <code>EE-02</code>, <code>PO-02</code>, <code>PO-01</code>, <code>DS-01</code>, <code>PO-03</code> DFs: <code>DF-03</code>, <code>DF-07</code>, <code>DF-08</code>, <code>DF-09</code>
       <td>Elements: <code>PO-02</code>, <code>PO-01.1</code>, <code>DS-01</code>, <code>PO-01.2</code>, <code>PO-01.8</code>, <code>PO-03</code> DFs: <code>DF-07.1</code>, <code>DF-08.1</code>, <code>DF-08.4</code>, <code>DF-05.1</code>, <code>DF-06.8</code>, <code>DF-09.5</code>, <code>DF-09.6</code>
-      <td>Modify conditionally — metadata attacks are tracked; add third-party-script authority and versioned tool-surface considerations if native applicability is established.
+      <td class="threat-status-modify">Modify conditionally — metadata attacks are tracked; add third-party-script authority and versioned tool-surface considerations if native applicability is established.
       <td>Direct once the script has page authority; the script supply chain itself is outside the current model.
-      <td>Paper: <a href="https://arxiv.org/abs/2606.06387">Lee et al. 2026</a>; spec delivery surface: <a href="https://webmachinelearning.github.io/webmcp/#model-context-tool-map">tool map</a> and <a href="https://webmachinelearning.github.io/webmcp/#metadata-description-attacks">metadata/description attacks</a>; native implementation applicability untested
+      <td>Paper: <a data-link-type="biblio" href="#biblio-lee-webmcp-poisoning" title="WebMCP Tool Surface Poisoning: Runtime Manipulation Attacks on LLM Agents">Lee et al. 2026</a>; spec delivery surface: <a href="https://webmachinelearning.github.io/webmcp/#model-context-tool-map">tool map</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a> and <a href="https://webmachinelearning.github.io/webmcp/#metadata-description-attacks">metadata/description attacks</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>; native implementation applicability untested
      <tr>
       <td><code>T-23</code>
       <td>Agentic navigation (WebMCP delivery)
       <td>Agent memory retains a page directive or poisoned context across navigation and applies it later.
-      <td>L0 + L1
-      <td>Elements: <code>PO-02</code>, <code>PO-01</code>, <code>PO-03</code>, <code>EE-03</code>, <code>TB-03</code>, <code>TB-04</code> DFs: <code>DF-03</code>, <code>DF-09</code>, <code>DF-14</code>, <code>DF-16</code>, <code>DF-17</code>, <code>DF-11</code>, <code>DF-12</code>
-      <td>Elements: <code>PO-02</code>, <code>PO-01.8</code>, <code>PO-03</code>, <code>TB-03</code>, <code>TB-04</code> DFs: <code>DF-09.5</code>, <code>DF-09.6</code>
-      <td>Modify — cross-origin retained state is already a TODO; complete it with memory, provenance, and navigation semantics.
-      <td>Direct at L0 at the actor/process level: retained context is compressed inside <code>PO-03</code> or, for provider-backed state, <code>EE-03</code>; no separate DS is required at this abstraction. Partial at L1 because later invocation and the provider path are omitted.
-      <td>Blog: <a href="https://www.earlence.com/blog.html#/post/webmcp-sameorigin">Fernandes 2026</a>; vendor guidance: <a href="https://developer.chrome.com/docs/agents/security">agent security</a>; model/DFD inference; spec: <a href="https://webmachinelearning.github.io/webmcp/#violation-same-origin-boundaries">same-origin boundaries</a>
+      <td>Elements: <code>PO-02</code>, <code>PO-01</code>, <code>PO-03</code>, <code>EE-03</code>, <code>TB-02</code>, <code>TB-03</code> DFs: <code>DF-03</code>, <code>DF-09</code>, <code>DF-14</code>, <code>DF-16</code>, <code>DF-17</code>, <code>DF-11</code>, <code>DF-12</code>
+      <td>Elements: <code>PO-02</code>, <code>PO-01.2</code>, <code>PO-01.3</code>, <code>PO-01.8</code>, <code>PO-01.10</code>, <code>PO-03</code>, <code>DS-01</code>, <code>TB-02</code>, <code>TB-03</code> DFs: in-page discovery/invocation/result <code>DF-08.4</code>, <code>DF-05.1</code>, <code>DF-06.8</code>, <code>DF-05.4</code>, <code>DF-12.2</code>, <code>DF-13.2</code>, <code>DF-06.9</code>; browser observation/invocation/result <code>DF-09.5</code>, <code>DF-09.6</code>, <code>DF-11.1</code>, <code>DF-12.1</code>, <code>DF-13.1</code>, <code>DF-14.1</code>
+      <td class="threat-status-modify">Modify — cross-origin retained state is already a TODO; complete it with memory, provenance, and navigation semantics.
+      <td>Direct at L0 at the actor/process level: retained context is compressed inside <code>PO-03</code> or, for provider-backed state, <code>EE-03</code>; no separate DS is required at this abstraction. Partial at L1 because both later deployment-specific invocation paths are represented, but agent memory and the provider path remain compressed or omitted.
+      <td>Blog: <a data-link-type="biblio" href="#biblio-fernandes-webmcp-sameorigin" title="Breaking Origin Isolation without Breaking the Browser">Fernandes 2026</a>; vendor guidance: <a data-link-type="biblio" href="#biblio-chrome-agent-security" title="Agent security considerations for WebMCP">agent security</a>; model/DFD inference; spec: <a href="https://webmachinelearning.github.io/webmcp/#violation-same-origin-boundaries">same-origin boundaries</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
      <tr>
       <td><code>T-24</code>
       <td>Agentic navigation (supply-chain; WebMCP action path)
       <td>A compromised agent, extension, provider, update, or configuration path gains the ability to invoke WebMCP tools.
-      <td>L0 + L1
-      <td>Elements: <code>PO-03</code>, <code>EE-03</code>, <code>PO-01</code>, <code>TB-04</code> DFs: <code>DF-16</code>, <code>DF-17</code>, <code>DF-11</code>, <code>DF-12</code>
-      <td>Elements: <code>PO-03</code>, <code>TB-04</code> DFs: —
-      <td>Add — agent, extension, or provider compromise and supply-chain trust assumptions or non-goals are not addressed.
+      <td>Elements: <code>PO-03</code>, <code>EE-03</code>, <code>PO-01</code>, <code>TB-03</code> DFs: <code>DF-16</code>, <code>DF-17</code>, <code>DF-11</code>, <code>DF-12</code>
+      <td>Elements: <code>PO-03</code>, <code>PO-01.3</code>, <code>PO-01.10</code>, <code>PO-02</code>, <code>TB-03</code> DFs: in-page <code>DF-05.4</code>, <code>DF-12.2</code>; browser-integrated <code>DF-11.1</code>, <code>DF-12.1</code>
+      <td class="threat-status-add">Add — agent, extension, or provider compromise and supply-chain trust assumptions or non-goals are not addressed.
       <td>Partial: the compromised-agent and compromised-inference-provider paths are represented; extension distribution, software update, and configuration supply-chain exchanges are not.
-      <td>Workshop: <a href="https://github.com/w3c-cg/threat-modeling/blob/agentic-ai-web-browsers-rewrite/meetings/2026-07-14_minutes.md">Threat Modeling CG minutes, 14 July 2026</a>; vendor guidance: <a href="https://developer.chrome.com/docs/agents/security">agent security</a>; spec: <a href="https://webmachinelearning.github.io/webmcp/#browsers-agent">browser’s agent</a> and <a href="https://webmachinelearning.github.io/webmcp/#agent-baseline-capabilities">agent baseline</a>
+      <td>Workshop: <a data-link-type="biblio" href="#biblio-tmcg-minutes-2026-07-14" title="Threat Modeling Community Group Meeting Minutes">Threat Modeling CG minutes, 14 July 2026</a>; vendor guidance: <a data-link-type="biblio" href="#biblio-chrome-agent-security" title="Agent security considerations for WebMCP">agent security</a>; spec: <a href="https://webmachinelearning.github.io/webmcp/#browsers-agent">browser’s agent</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a> and <a href="https://webmachinelearning.github.io/webmcp/#agent-baseline-capabilities">agent baseline</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
      <tr>
       <td><code>T-25</code>
       <td>WebMCP-specific
       <td>Page-controlled metadata or presentation deceives a browser consent or confirmation UI.
-      <td>L0 + L1
-      <td>Elements: <code>EE-01</code>, <code>PO-01</code>, <code>PO-02</code>, <code>DS-01</code>, <code>PO-03</code>, <code>TB-01</code> DFs: <code>DF-07</code>, <code>DF-08</code>, <code>DF-09</code>, <code>DF-10</code>, <code>DF-11</code>, <code>DF-02</code>, <code>DF-01</code>
-      <td>Elements: <code>PO-02</code>, <code>PO-01.1</code>, <code>DS-01</code>, <code>PO-01.8</code>, <code>PO-03</code> DFs: <code>DF-07.1</code>, <code>DF-08.1</code>, <code>DF-09.5</code>, <code>DF-09.6</code>
-      <td>Modify — intent and tool title exist; add trusted consent UI, stable grant identity, lifetime, revalidation, and revocation.
-      <td>Direct at L0: <code>DF-02</code> abstracts the browser-owned UI output and <code>DF-01</code> the user’s approval or rejection; <code>DF-10</code> carries the original user intent used to detect mismatch. Partial at L1 because user mediation is intentionally omitted.
-      <td>GitHub: <a href="https://github.com/webmachinelearning/webmcp/issues/44">issue #44</a> and <a href="https://github.com/victorhuangwq/webmcp/blob/security-and-privacy-questionnaire/security-privacy-questionnaire.md">security and privacy questionnaire</a>; spec: <a href="https://webmachinelearning.github.io/webmcp/#tool-definition-title">tool title</a> and <a href="https://webmachinelearning.github.io/webmcp/#misrepresentation-of-intent">misrepresentation of intent</a>; vendor guidance: <a href="https://developer.chrome.com/docs/ai/webmcp/secure-tools">WebMCP tool security</a>
+      <td>Elements: <code>EE-01</code>, <code>PO-01</code>, <code>PO-02</code>, <code>DS-01</code>, <code>PO-03</code> DFs: <code>DF-07</code>, <code>DF-08</code>, <code>DF-09</code>, <code>DF-10</code>, <code>DF-11</code>, <code>DF-02</code>, <code>DF-01</code>
+      <td>L1-BI only — Elements: <code>PO-02</code>, <code>PO-01.1</code>, <code>DS-01</code>, <code>PO-01.8</code>, <code>PO-01.10</code>, <code>PO-03</code> DFs: <code>DF-07.1</code>, <code>DF-08.1</code>, <code>DF-09.5</code>, <code>DF-09.6</code>, <code>DF-11.1</code>
+      <td class="threat-status-modify">Modify — intent and tool title exist; add trusted consent UI, stable grant identity, lifetime, revalidation, and revocation.
+      <td>Direct at L0: <code>DF-02</code> abstracts the browser-owned UI output and <code>DF-01</code> the user’s approval or rejection; <code>DF-10</code> carries the original user intent used to detect mismatch. Partial and browser-integrated only at L1 because user mediation is intentionally omitted and no trusted browser UI is modeled for the author-provided in-page agent.
+      <td>GitHub: <a data-link-type="biblio" href="#biblio-webmcp-issue-44" title="Managing action specific permissions">issue #44</a> and <a data-link-type="biblio" href="#biblio-webmcp-spq" title="WebMCP Self-Review Questionnaire: Security and Privacy">security and privacy questionnaire</a>; spec: <a href="https://webmachinelearning.github.io/webmcp/#tool-definition-title">tool title</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a> and <a href="https://webmachinelearning.github.io/webmcp/#misrepresentation-of-intent">misrepresentation of intent</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>; vendor guidance: <a data-link-type="biblio" href="#biblio-chrome-webmcp-security" title="WebMCP tool security">WebMCP tool security</a>
      <tr>
       <td><code>T-26</code>
       <td>Agentic navigation; WebMCP-specific
       <td>Human-facing content and agent-facing tool semantics disagree, causing a deceptive or unintended action.
-      <td>L0 + L1
-      <td>Elements: <code>EE-01</code>, <code>PO-02</code>, <code>PO-01</code>, <code>DS-01</code>, <code>PO-03</code>, <code>EE-02</code>, <code>TB-01</code> DFs: <code>DF-02</code>, <code>DF-09</code>, <code>DF-11</code>, <code>DF-12</code>, <code>DF-04</code>
-      <td>Elements: <code>PO-02</code>, <code>PO-01.1</code>, <code>DS-01</code>, <code>PO-01.8</code>, <code>PO-03</code>, <code>PO-01.3</code> DFs: <code>DF-07.1</code>, <code>DF-08.1</code>, <code>DF-09.5</code>, <code>DF-09.6</code>, <code>DF-05.4</code>
-      <td>Modify — intent mismatch is tracked; add cross-interface semantic and effect correspondence.
-      <td>Partial: agent-facing semantics are visible at L1; rendered UI and resulting remote effect remain L0 concerns.
-      <td>Workshop: <a href="https://www.w3.org/2025/11/12-agentic-browsing-sec-minutes.html">TPAC 2025 agentic browsing breakout</a> and <a href="https://github.com/w3c/securityig/blob/8dbe40b688ab6643f50e94f31ea629c204c514dc/meetings/2025/2025-11-14_minutes.md#L106">SING TPAC 2025 minutes</a>; spec/model analysis: <a href="https://webmachinelearning.github.io/webmcp/#tool-definition-title">tool title</a> and <a href="https://webmachinelearning.github.io/webmcp/#misrepresentation-of-intent">misrepresentation of intent</a>
+      <td>Elements: <code>EE-01</code>, <code>PO-02</code>, <code>PO-01</code>, <code>DS-01</code>, <code>PO-03</code>, <code>EE-02</code> DFs: <code>DF-02</code>, <code>DF-09</code>, <code>DF-11</code>, <code>DF-12</code>, <code>DF-04</code>
+      <td>Elements: <code>PO-02</code>, <code>PO-01.1</code>, <code>DS-01</code>, <code>PO-01.2</code>, <code>PO-01.8</code>, <code>PO-03</code>, <code>PO-01.3</code>, <code>PO-01.10</code> DFs: registration <code>DF-07.1</code>, <code>DF-08.1</code>; in-page discovery/invocation <code>DF-08.4</code>, <code>DF-05.1</code>, <code>DF-06.8</code>, <code>DF-05.4</code>, <code>DF-12.2</code>; browser observation/invocation <code>DF-09.5</code>, <code>DF-09.6</code>, <code>DF-11.1</code>, <code>DF-12.1</code>
+      <td class="threat-status-modify">Modify — intent mismatch is tracked; add cross-interface semantic and effect correspondence.
+      <td>Partial: agent-facing semantics are visible in both L1 deployment views; rendered UI and resulting remote effect remain L0 concerns.
+      <td>Workshop: <a data-link-type="biblio" href="#biblio-agentic-browsing-tpac-2025" title="Agentic Browsing and the Web&apos;s Security Model — Meeting Minutes">TPAC 2025 agentic browsing breakout</a> and <a data-link-type="biblio" href="#biblio-sing-tpac-2025" title="Security Interest Group TPAC 2025 Meeting Minutes">SING TPAC 2025 minutes</a>; spec/model analysis: <a href="https://webmachinelearning.github.io/webmcp/#tool-definition-title">tool title</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a> and <a href="https://webmachinelearning.github.io/webmcp/#misrepresentation-of-intent">misrepresentation of intent</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>
      <tr>
       <td><code>T-27</code>
       <td>Agentic navigation (WebMCP action path)
-      <td>A manipulated agent or materially incorrect model output selects or parameterizes a real WebMCP tool, causing an unintended action, disclosure, or deviation from an applicable policy even when the action remains within the user’s formal mandate.
-      <td>L0 + L1
-      <td>Elements: <code>EE-01</code>, <code>EE-03</code>, <code>PO-03</code>, <code>PO-01</code>, <code>PO-02</code>, <code>TB-04</code> DFs: <code>DF-10</code>, <code>DF-16</code>, <code>DF-17</code>, <code>DF-11</code>, <code>DF-12</code>, <code>DF-04</code>
-      <td>Elements: <code>PO-03</code>, <code>TB-04</code> DFs: —
-      <td>Add — agent capabilities and intent mismatch are discussed, but manipulated or model-originated tool selection, arguments, side-effect interpretation, and divergence from an applicable external policy are not addressed.
-      <td>Direct at L0: the inference response/tool-selection and subsequent invocation path are explicit. Partial at L1: the agent is retained as context, but provider/model output and browser-agent invocation flows are omitted.
-      <td>PHANTOM-B-related spec context: <a href="https://webmachinelearning.github.io/webmcp/#agent-baseline-capabilities">agent baseline</a> and <a href="https://webmachinelearning.github.io/webmcp/#misrepresentation-of-intent">misrepresentation of intent</a>
+      <td>A materially incorrect model output selects or parameterizes a real WebMCP tool, causing an unintended action or disclosure.
+      <td>Elements: <code>EE-01</code>, <code>EE-03</code>, <code>PO-03</code>, <code>PO-01</code>, <code>PO-02</code>, <code>TB-03</code> DFs: <code>DF-10</code>, <code>DF-16</code>, <code>DF-17</code>, <code>DF-11</code>, <code>DF-12</code>, <code>DF-04</code>
+      <td>Elements: <code>PO-03</code>, <code>PO-01.3</code>, <code>PO-01.10</code>, <code>PO-02</code>, <code>TB-03</code> DFs: in-page <code>DF-05.4</code>, <code>DF-12.2</code>; browser-integrated <code>DF-11.1</code>, <code>DF-12.1</code>
+      <td class="threat-status-add">Add — agent capabilities and intent mismatch are discussed, but model-originated false tool selection, arguments, or side-effect interpretation are not addressed.
+      <td>Direct at L0: the inference response/tool-selection and subsequent invocation path are explicit. Partial at L1: the agent and browser-agent invocation are explicit, while the provider/model output remains outside the methods-level view.
+      <td>Model/DFD inference; related spec context: <a href="https://webmachinelearning.github.io/webmcp/#agent-baseline-capabilities">agent baseline</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a> and <a href="https://webmachinelearning.github.io/webmcp/#misrepresentation-of-intent">misrepresentation of intent</a> <a data-link-type="biblio" href="#biblio-webmcp" title="WebMCP">[WEBMCP]</a>; product-specific occurrence untested
    </table>
    <h2 class="heading settled" data-level="3" id="what-are-we-going-to-do-about-it"><span class="secno">3. </span><span class="content">What are we going to do about it?</span><a class="self-link" href="#what-are-we-going-to-do-about-it"></a></h2>
-   <p>The response table maps candidate responses to the threat, pathway, and harm identifiers in the previous section. It is intentionally not deduplicated. Some rows overlap because they came from different prompts or address the same threat or pathway at different layers.</p>
+   <p>The planned response table will map candidate responses.</p>
    <p class="issue" id="issue-96bfad03"><a class="self-link" href="#issue-96bfad03"></a> This section is incomplete.</p>
-   <h3 class="heading settled" data-level="3.1" id="candidate-deployment-response-independent-policy-based-assessment"><span class="secno">3.1. </span><span class="content">Candidate deployment response: independent policy-based assessment</span><a class="self-link" href="#candidate-deployment-response-independent-policy-based-assessment"></a></h3>
-   <p>An implementation or deployment may introduce an independent Assessor that compares an observable decision record—including the applicable user goal, exposed tool provenance, selected tool and arguments, authorization or mediation, returned result, and observable effect—against a versioned external referential, such as a certified policy set or regulatory rulebook. This can detect a manipulated or materially incorrect action even where the invocation remains within the user’s formal mandate. It is a deployment-level control, not part of WebMCP conformance. Unless the assessment is placed before an irreversible side effect and can block the invocation, it is detective rather than preventive. It primarily responds to T-27 and may support the provenance and attribution concerns in T-07 and T-19.
-The value of the response depends on the evidence path. Evidence must be sufficiently complete, authentic, timely, and bound to the production agent, inference provider, model and configuration version, browser context, tool surface, and specific invocation. Provider-generated explanations or hidden model reasoning are not, by themselves, authoritative evidence. A formal agreement between the Subject Agent or inference provider and the Trust Authority can allocate accountability, audit rights, and consequences and can transfer part of the risk. It does not technically guarantee evidence integrity or completeness, and it only partially responds to T-24 when the provider controls the evidence being assessed.  
-Remaining threats include selective omission, fabrication, replay, evaluation-specific behavior, differences between the evaluated sample and production deployment, stale or ambiguous referentials, Assessor or Trust Authority compromise, and detection only after a consequential effect. Compliance with the referential does not by itself establish alignment with the user’s actual intent or with the human-facing semantics of the action (T-03 and T-26). The evidence flow may also disclose or retain user goals, arguments, results, or cross-context identifiers, creating additional T-05 and T-17 concerns; minimization, partitioning, access control, and retention limits would be required.  
-If this response is developed further, the Assessor, Trust Authority, referential, evidence source or store, and evidence and assessment-result flows should be modeled as a separate deployment overlay. That overlay should make its trust boundaries, policy versioning, evidence-generation responsibility, privacy assumptions, accountability recipients, and remaining threats explicit before the control is presented as providing assurance.</p>
    <h2 class="heading settled" data-level="4" id="did-we-do-a-good-enough-job"><span class="secno">4. </span><span class="content">Did we do a good enough job?</span><a class="self-link" href="#did-we-do-a-good-enough-job"></a></h2>
-   <p>This draft threat model provides:</p>
+   <p>The current draft contains:</p>
    <ul>
     <li data-md>
      <p>a high-level view of the WebMCP methods and surfaces in scope;</p>
     <li data-md>
      <p>a set of threats classified by their primary origin: the WebMCP-specific surface, agentic web navigation, or risks associated with exposing web-application functionality through a Web API;</p>
     <li data-md>
-     <p>a mapping between the identified threats and the Security and Privacy Considerations section, making visible where the specification addresses a threat and where further work may be needed.</p>
+     <p>a mapping from each threat to the Security and Privacy Considerations section, showing which threats the specification already addresses and where further work may be needed.</p>
    </ul>
-   <p>The next pass should focus on the corresponding remediations and on whether they are appropriately placed in the specification. It may also be useful to develop a more detailed analysis of the algorithms and methods involved, either through focused diagrams or through a textual analysis where a diagram would not clarify the relevant trust boundaries, data flows, or decision points.</p>
-   <p>Finally, the model should assess the two deployment scenarios separately: an in-page agent and an AI agent integrated into the browser. After consolidating the general model, this comparison can show whether either scenario introduces additional threats, changes their severity, or calls for scenario-specific mitigations.</p>
+   <p>The next pass should add the corresponding responses, determine where they belong in the specification, and compare threats, responses, and residual risk across the in-page and browser-integrated deployments. That comparison should record whether a deployment changes severity or needs a deployment-specific mitigation.</p>
+   <p>Algorithm-level analysis can remain textual unless a focused diagram clarifies a trust boundary, data flow, or decision point.</p>
   </main>
   <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
+  <h2 class="heading no-num no-ref settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
+  <h3 class="heading no-num no-ref settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
+  <dl>
+   <dt id="biblio-threat-model-web">[THREAT-MODEL-WEB]
+   <dd><a href="https://www.w3.org/TR/threat-model-web/"><cite>Threat Model for the Web</cite></a>. URL: <a href="https://www.w3.org/TR/threat-model-web/">https://www.w3.org/TR/threat-model-web/</a>
+  </dl>
+  <h3 class="heading no-num no-ref settled" id="informative"><span class="content">Non-Normative References</span><a class="self-link" href="#informative"></a></h3>
+  <dl>
+   <dt id="biblio-agentic-browsing-tpac-2025">[AGENTIC-BROWSING-TPAC-2025]
+   <dd><a href="https://www.w3.org/2025/11/12-agentic-browsing-sec-minutes.html"><cite>Agentic Browsing and the Web's Security Model — Meeting Minutes</cite></a>. 12 November 2025. URL: <a href="https://www.w3.org/2025/11/12-agentic-browsing-sec-minutes.html">https://www.w3.org/2025/11/12-agentic-browsing-sec-minutes.html</a>
+   <dt id="biblio-chrome-agent-security">[CHROME-AGENT-SECURITY]
+   <dd><a href="https://developer.chrome.com/docs/agents/security"><cite>Agent security considerations for WebMCP</cite></a>. 9 June 2026. URL: <a href="https://developer.chrome.com/docs/agents/security">https://developer.chrome.com/docs/agents/security</a>
+   <dt id="biblio-chrome-webmcp">[CHROME-WEBMCP]
+   <dd><a href="https://developer.chrome.com/docs/ai/webmcp"><cite>WebMCP</cite></a>. 7 August 2026. URL: <a href="https://developer.chrome.com/docs/ai/webmcp">https://developer.chrome.com/docs/ai/webmcp</a>
+   <dt id="biblio-chrome-webmcp-security">[CHROME-WEBMCP-SECURITY]
+   <dd><a href="https://developer.chrome.com/docs/ai/webmcp/secure-tools"><cite>WebMCP tool security</cite></a>. 1 July 2026. URL: <a href="https://developer.chrome.com/docs/ai/webmcp/secure-tools">https://developer.chrome.com/docs/ai/webmcp/secure-tools</a>
+   <dt id="biblio-chromium-0e5ca7c">[CHROMIUM-0E5CA7C]
+   <dd><a href="https://chromium.googlesource.com/chromium/src/+/0e5ca7c2941fedec46511487298eddcc6c8f99a2"><cite>Chromium WebMCP implementation snapshot 0e5ca7c</cite></a>. URL: <a href="https://chromium.googlesource.com/chromium/src/+/0e5ca7c2941fedec46511487298eddcc6c8f99a2">https://chromium.googlesource.com/chromium/src/+/0e5ca7c2941fedec46511487298eddcc6c8f99a2</a>
+   <dt id="biblio-chromium-5e23c6a">[CHROMIUM-5E23C6A]
+   <dd><a href="https://chromium.googlesource.com/chromium/src/+/5e23c6ae1d31e362dc5e4a8f492b6499a204602e"><cite>Chromium WebMCP implementation snapshot 5e23c6a</cite></a>. 15 August 2026. URL: <a href="https://chromium.googlesource.com/chromium/src/+/5e23c6ae1d31e362dc5e4a8f492b6499a204602e">https://chromium.googlesource.com/chromium/src/+/5e23c6ae1d31e362dc5e4a8f492b6499a204602e</a>
+   <dt id="biblio-chromium-cl-8248081">[CHROMIUM-CL-8248081]
+   <dd><a href="https://chromium-review.googlesource.com/c/chromium/src/+/8248081"><cite>Chromium change 8248081: Expose RegisteredTool.inputSchema as an object</cite></a>. 20 August 2026. URL: <a href="https://chromium-review.googlesource.com/c/chromium/src/+/8248081">https://chromium-review.googlesource.com/c/chromium/src/+/8248081</a>
+   <dt id="biblio-cui-zuo-ria">[CUI-ZUO-RIA]
+   <dd>Yu Cui; Cong Zuo. <a href="https://doi.org/10.48550/arXiv.2505.06643"><cite>Practical Reasoning Interruption Attacks on Reasoning Large Language Models</cite></a>. 10 May 2025. URL: <a href="https://doi.org/10.48550/arXiv.2505.06643">https://doi.org/10.48550/arXiv.2505.06643</a>
+   <dt id="biblio-fernandes-webmcp-sameorigin">[FERNANDES-WEBMCP-SAMEORIGIN]
+   <dd>Earlence Fernandes. <a href="https://www.earlence.com/blog.html#/post/webmcp-sameorigin"><cite>Breaking Origin Isolation without Breaking the Browser</cite></a>. 30 April 2026. URL: <a href="https://www.earlence.com/blog.html#/post/webmcp-sameorigin">https://www.earlence.com/blog.html#/post/webmcp-sameorigin</a>
+   <dt id="biblio-json-schema">[JSON-SCHEMA]
+   <dd><a href="https://json-schema.org/draft/2020-12/json-schema-core.html"><cite>JSON Schema: A Media Type for Describing JSON Documents</cite></a>. URL: <a href="https://json-schema.org/draft/2020-12/json-schema-core.html">https://json-schema.org/draft/2020-12/json-schema-core.html</a>
+   <dt id="biblio-lee-webmcp-poisoning">[LEE-WEBMCP-POISONING]
+   <dd>Lin-Fa Lee; et al. <a href="https://doi.org/10.48550/arXiv.2606.06387"><cite>WebMCP Tool Surface Poisoning: Runtime Manipulation Attacks on LLM Agents</cite></a>. 4 June 2026. URL: <a href="https://doi.org/10.48550/arXiv.2606.06387">https://doi.org/10.48550/arXiv.2606.06387</a>
+   <dt id="biblio-pageagent">[PAGEAGENT]
+   <dd><a href="https://github.com/alibaba/page-agent"><cite>PageAgent: JavaScript in-page GUI agent</cite></a>. URL: <a href="https://github.com/alibaba/page-agent">https://github.com/alibaba/page-agent</a>
+   <dt id="biblio-paz-bioshocking">[PAZ-BIOSHOCKING]
+   <dd>Roy Paz. <a href="https://layerxsecurity.com/blog/bioshocking-ai-gaming-the-ai-browser-and-escaping-its-guardrails/"><cite>BioShocking AI: Gaming the AI Browser and Escaping its Guardrails</cite></a>. 29 June 2026. URL: <a href="https://layerxsecurity.com/blog/bioshocking-ai-gaming-the-ai-browser-and-escaping-its-guardrails/">https://layerxsecurity.com/blog/bioshocking-ai-gaming-the-ai-browser-and-escaping-its-guardrails/</a>
+   <dt id="biblio-sing-tpac-2025">[SING-TPAC-2025]
+   <dd><a href="https://github.com/w3c/securityig/blob/8dbe40b688ab6643f50e94f31ea629c204c514dc/meetings/2025/2025-11-14_minutes.md#L106"><cite>Security Interest Group TPAC 2025 Meeting Minutes</cite></a>. 14 November 2025. URL: <a href="https://github.com/w3c/securityig/blob/8dbe40b688ab6643f50e94f31ea629c204c514dc/meetings/2025/2025-11-14_minutes.md#L106">https://github.com/w3c/securityig/blob/8dbe40b688ab6643f50e94f31ea629c204c514dc/meetings/2025/2025-11-14_minutes.md#L106</a>
+   <dt id="biblio-threat-modeling-guide">[THREAT-MODELING-GUIDE]
+   <dd><a href="https://www.w3.org/TR/threat-modeling-guide/"><cite>Threat Modeling Guide</cite></a>. URL: <a href="https://www.w3.org/TR/threat-modeling-guide/">https://www.w3.org/TR/threat-modeling-guide/</a>
+   <dt id="biblio-tmcg-minutes-2026-07-14">[TMCG-MINUTES-2026-07-14]
+   <dd><a href="https://github.com/w3c-cg/threat-modeling/blob/agentic-ai-web-browsers-rewrite/meetings/2026-07-14_minutes.md"><cite>Threat Modeling Community Group Meeting Minutes</cite></a>. 14 July 2026. URL: <a href="https://github.com/w3c-cg/threat-modeling/blob/agentic-ai-web-browsers-rewrite/meetings/2026-07-14_minutes.md">https://github.com/w3c-cg/threat-modeling/blob/agentic-ai-web-browsers-rewrite/meetings/2026-07-14_minutes.md</a>
+   <dt id="biblio-webmcp">[WEBMCP]
+   <dd>Brandon Walderman; Khushal Sagar; Dominic Farolino. <a href="https://webmachinelearning.github.io/webmcp/"><cite>WebMCP</cite></a>. 19 August 2026. Draft Community Group Report. URL: <a href="https://webmachinelearning.github.io/webmcp/">https://webmachinelearning.github.io/webmcp/</a>
+   <dt id="biblio-webmcp-declarative-explainer">[WEBMCP-DECLARATIVE-EXPLAINER]
+   <dd><a href="https://github.com/webmachinelearning/webmcp/blob/main/declarative-api-explainer.md"><cite>Declarative WebMCP API Explainer</cite></a>. URL: <a href="https://github.com/webmachinelearning/webmcp/blob/main/declarative-api-explainer.md">https://github.com/webmachinelearning/webmcp/blob/main/declarative-api-explainer.md</a>
+   <dt id="biblio-webmcp-explainer">[WEBMCP-EXPLAINER]
+   <dd><a href="https://github.com/webmachinelearning/webmcp/blob/main/README.md"><cite>WebMCP Explainer</cite></a>. URL: <a href="https://github.com/webmachinelearning/webmcp/blob/main/README.md">https://github.com/webmachinelearning/webmcp/blob/main/README.md</a>
+   <dt id="biblio-webmcp-issue-44">[WEBMCP-ISSUE-44]
+   <dd>Khushal Sagar. <a href="https://github.com/webmachinelearning/webmcp/issues/44"><cite>Managing action specific permissions</cite></a>. 24 October 2025. URL: <a href="https://github.com/webmachinelearning/webmcp/issues/44">https://github.com/webmachinelearning/webmcp/issues/44</a>
+   <dt id="biblio-webmcp-spq">[WEBMCP-SPQ]
+   <dd><a href="https://github.com/victorhuangwq/webmcp/blob/security-and-privacy-questionnaire/security-privacy-questionnaire.md"><cite>WebMCP Self-Review Questionnaire: Security and Privacy</cite></a>. URL: <a href="https://github.com/victorhuangwq/webmcp/blob/security-and-privacy-questionnaire/security-privacy-questionnaire.md">https://github.com/victorhuangwq/webmcp/blob/security-and-privacy-questionnaire/security-privacy-questionnaire.md</a>
+  </dl>
