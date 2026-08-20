@@ -6,14 +6,15 @@ flowchart TB
   subgraph TB1_BrowserBoundary["TB-01 Web User Agent Boundary"]
     direction TB
     PO1_WebBrowser(PO-01<br/>Web Browser)
+    DS2_PendingExecutions[(DS-02<br/>Pending Tool<br/>Executions Map)]
 
     subgraph TB2_WebContextIsolation["TB-02 Web Context Isolation Boundaries"]
       PO2_DocumentOriginContext(PO-02<br/>Document / Origin<br/>Execution Context)
       DS1_ModelContextToolMap[(DS-01<br/>ModelContext<br/>Tool Map)]
-    end
 
-    subgraph TB3_AIAgentBoundary["TB-03 AI Agent Boundary"]
-      PO3_AIAgentOrchestrator(PO-03<br/>AI Agent<br/>Orchestrator)
+      subgraph TB3_AIAgentBoundary["TB-03 AI Agent Boundary"]
+        PO3_AIAgentOrchestrator(PO-03<br/>Author-provided<br/>In-page Agent)
+      end
     end
   end
 
@@ -26,9 +27,9 @@ flowchart TB
   EE1_User <==>|DF-01 → User Input / Navigation<br/>← DF-02 Rendered Output /<br/>Browser Mediation| PO1_WebBrowser
 
   EE1_User <==>|DF-10 → Prompt / Goal<br/>← DF-15 Final Response| PO3_AIAgentOrchestrator
-  PO3_AIAgentOrchestrator ==>|DF-11<br/>Tool Call| PO1_WebBrowser
+  PO3_AIAgentOrchestrator ==>|DF-11<br/>In-page Tool Call| PO1_WebBrowser
   PO1_WebBrowser ==>|DF-14<br/>Return Payload| PO3_AIAgentOrchestrator
-  DS1_ModelContextToolMap ==>|DF-09<br/>Tools Exposed<br/>to Agent| PO3_AIAgentOrchestrator
+  DS1_ModelContextToolMap ==>|DF-09<br/>Tools Discovered<br/>by Agent| PO3_AIAgentOrchestrator
 
   PO1_WebBrowser ==>|DF-08<br/>Registered Tool State| DS1_ModelContextToolMap
   PO1_WebBrowser ==>|DF-06<br/>Web API Result /<br/>Event / Error| PO2_DocumentOriginContext
@@ -39,6 +40,9 @@ flowchart TB
   PO2_DocumentOriginContext <==>|DF-04 → Requests / Submitted Data<br/>← DF-03 Web Content /<br/>Response Data| EE2_RemoteWebSite
 
   PO3_AIAgentOrchestrator <==>|DF-16 → Inference Request / Context<br/>← DF-17 Inference Response /<br/>Tool Selection| EE3_AIInferenceProvider
+
+  PO1_WebBrowser ==>|DF-18<br/>Pending Execution<br/>State Update| DS2_PendingExecutions
+  DS2_PendingExecutions ==>|DF-19<br/>Pending Execution<br/>State / Lookup| PO1_WebBrowser
 
   classDef default fill:#fff,stroke:#000,stroke-width:4px,color:#000,font-size:22px,font-weight:bold,font-family:Arial
   classDef generic fill:#fff4cc,stroke:#000,stroke-width:4px,color:#000,font-size:22px,font-weight:bold,font-family:Arial
