@@ -1,0 +1,57 @@
+%%{init: {"theme":"base","themeCSS":".nodeLabel,.edgeLabel,.cluster-label,.label{font-family:Arial,sans-serif!important;font-weight:bold!important;}","flowchart":{"htmlLabels":true,"curve":"linear","nodeSpacing":80,"rankSpacing":95,"padding":18},"themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"22px","primaryColor":"#fff","primaryTextColor":"#000","primaryBorderColor":"#000","lineColor":"#000","secondaryColor":"#fff","tertiaryColor":"#fff","edgeLabelBackground":"#fff","clusterBkg":"#fff","clusterBorder":"#000"}}}%%
+flowchart TB
+
+  EE1_User[EE-01<br/>User]
+
+  subgraph TB1_BrowserBoundary["TB-01 Web User Agent Boundary"]
+    direction TB
+    PO1_WebBrowser(PO-01<br/>Web Browser)
+    DS2_PendingExecutions[(DS-02<br/>Pending Tool<br/>Executions Map)]
+
+    subgraph TB2_WebContextIsolation["TB-02 Web Context Isolation Boundaries"]
+      PO2_DocumentOriginContext(PO-02<br/>Document / Origin<br/>Execution Context)
+      DS1_ModelContextToolMap[(DS-01<br/>ModelContext<br/>Tool Map)]
+
+      subgraph TB3_AIAgentBoundary["TB-03 AI Agent Boundary"]
+        PO3_AIAgentOrchestrator(PO-03<br/>Author-provided<br/>In-page Agent)
+      end
+    end
+  end
+
+  EE2_RemoteWebSite[EE-02<br/>Remote Web Site / Service]
+  EE3_AIInferenceProvider[EE-03<br/>AI Inference<br/>Provider]
+
+  %% Non-semantic layout constraint: keep the remote site below the in-browser actors.
+  PO3_AIAgentOrchestrator ~~~ EE2_RemoteWebSite
+
+  EE1_User <==>|DF-01 → User Input / Navigation<br/>← DF-02 Rendered Output /<br/>Browser Mediation| PO1_WebBrowser
+
+  EE1_User <==>|DF-10 → Prompt / Goal<br/>← DF-15 Final Response| PO3_AIAgentOrchestrator
+  PO3_AIAgentOrchestrator ==>|DF-11<br/>In-page Tool Call| PO1_WebBrowser
+  PO1_WebBrowser ==>|DF-14<br/>Return Payload| PO3_AIAgentOrchestrator
+  DS1_ModelContextToolMap ==>|DF-09<br/>Tools Discovered<br/>by Agent| PO3_AIAgentOrchestrator
+
+  PO1_WebBrowser ==>|DF-08<br/>Registered Tool State| DS1_ModelContextToolMap
+  PO1_WebBrowser ==>|DF-06<br/>Web API Result /<br/>Event / Error| PO2_DocumentOriginContext
+  PO2_DocumentOriginContext ==>|DF-07<br/>Tool Exposure /<br/>Registration Request| PO1_WebBrowser
+  PO1_WebBrowser ==>|DF-12<br/>Tool Invocation| PO2_DocumentOriginContext
+  PO2_DocumentOriginContext ==>|DF-13<br/>Tool Output| PO1_WebBrowser
+
+  PO2_DocumentOriginContext <==>|DF-04 → Requests / Submitted Data<br/>← DF-03 Web Content /<br/>Response Data| EE2_RemoteWebSite
+
+  PO3_AIAgentOrchestrator <==>|DF-16 → Inference Request / Context<br/>← DF-17 Inference Response /<br/>Tool Selection| EE3_AIInferenceProvider
+
+  PO1_WebBrowser ==>|DF-18<br/>Pending Execution<br/>State Update| DS2_PendingExecutions
+  DS2_PendingExecutions ==>|DF-19<br/>Pending Execution<br/>State / Lookup| PO1_WebBrowser
+
+  classDef default fill:#fff,stroke:#000,stroke-width:4px,color:#000,font-size:22px,font-weight:bold,font-family:Arial
+  classDef generic fill:#fff4cc,stroke:#000,stroke-width:4px,color:#000,font-size:22px,font-weight:bold,font-family:Arial
+
+  class EE1_User,EE2_RemoteWebSite,PO1_WebBrowser,PO2_DocumentOriginContext generic
+
+  style TB1_BrowserBoundary fill:#fff4cc,stroke:#000000,stroke-width:4px,stroke-dasharray:8 6,color:#000000
+  style TB2_WebContextIsolation fill:#fff4cc,stroke:#000000,stroke-width:4px,stroke-dasharray:8 6,color:#000000
+  style TB3_AIAgentBoundary fill:#ffffff,stroke:#000000,stroke-width:4px,stroke-dasharray:8 6,color:#000000
+
+  linkStyle default stroke:#000,stroke-width:3px,color:#000
+  linkStyle 0 stroke-width:0px,opacity:0

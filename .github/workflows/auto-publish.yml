@@ -1,0 +1,30 @@
+name: Build Bikeshed
+
+on:
+  push:
+    branches:
+      - main
+  pull_request: {}
+
+jobs:
+  validate-and-publish:
+    name: Validate and Publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: w3c/spec-prod@v2
+        with:
+          TOOLCHAIN: bikeshed
+          VALIDATE_LINKS: false
+          VALIDATE_PUBRULES: false
+          GH_PAGES_BRANCH: gh-pages
+      - name: Deploy images
+        if: github.event_name == 'push'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./images
+          destination_dir: images
+          keep_files: true
