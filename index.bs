@@ -8,9 +8,9 @@ Repository: simoneonofri/threat-model-webmcp
 Issue Tracking: GitHub https://github.com/simoneonofri/threat-model-webmcp/issues
 Level: none
 Editor: Simone Onofri, w3cid 38211, W3C https://w3.org, simone@w3.org
-Editor: Zahra Ebadi Ansaroudi, w3cid 157607, FBK https://fbk.eu, zebadiansaroudi@fbk.eu
+Editor: Zahra Ebadi Ansaroudi, w3cid 157607, FBK https://www.fbk.eu, zebadiansaroudi@fbk.eu
 Editor: Amir Sharif, w3cid 157587, FBK https://www.fbk.eu, asharif@fbk.eu
-Editor: Giovanni Corti, w3cid 171320, FBK https://fbk.eu, gcorti@fbk.eu
+Editor: Giovanni Corti, w3cid 171320, FBK https://www.fbk.eu, gcorti@fbk.eu
 Abstract:
   <p>This document is a living threat model for WebMCP. It starts from the specification and focuses on security threats.</p>
 Status Text:
