@@ -45,19 +45,19 @@ flowchart TB
 
   end
 
-  PO2_DocumentOriginContext <==>|DF-05.2 →<br/>ModelContext Access<br/>← DF-06.6<br/>Associated ModelContext| PO19_ModelContextGetter
+  PO2_DocumentOriginContext <==>|DF-20 →<br/>ModelContext Access<br/>← DF-06.6<br/>Associated ModelContext| PO19_ModelContextGetter
 
   PO2_DocumentOriginContext ==>|DF-07.1<br/>Tool Definition / Options| PO11_RegisterTool
   PO11_RegisterTool ==>|DF-08.1<br/>Registered Tool State Write| DS1_ModelContextToolMap
 
-  PO3_AIAgentOrchestrator <==>|DF-05.1 →<br/>Discovery Request / fromOrigins<br/>← DF-06.8<br/>RegisteredTool Sequence| PO12_GetTools
-  DS1_ModelContextToolMap ==>|DF-08.4<br/>Registered Tool State Read| PO12_GetTools
+  PO3_AIAgentOrchestrator <==>|DF-22 →<br/>Discovery Request / fromOrigins<br/>← DF-09.8<br/>RegisteredTool Sequence| PO12_GetTools
+  DS1_ModelContextToolMap ==>|DF-09.7<br/>Registered Tool State Read| PO12_GetTools
 
-  PO3_AIAgentOrchestrator <==>|DF-05.4 →<br/>In-page Tool Call<br/>← DF-06.9<br/>In-page Return Payload| PO13_ExecuteTool
+  PO3_AIAgentOrchestrator <==>|DF-11.2 →<br/>In-page Tool Call<br/>← DF-14.2<br/>In-page Return Payload| PO13_ExecuteTool
   PO13_ExecuteTool <==>|DF-12.2 →<br/>Target Tool Dispatch<br/>← DF-13.2<br/>Tool Output / Failure| PO2_DocumentOriginContext
   PO13_ExecuteTool <==>|DF-18.1 →<br/>Pending Execution State Update<br/>← DF-19.1<br/>Pending Execution State / Lookup| DS2_PendingExecutions
 
-  PO2_DocumentOriginContext <==>|DF-05.3 →<br/>Document Lifecycle Trigger<br/>← DF-06.7<br/>Cleanup Cancellation / Completion| PO17_UnloadingCleanup
+  PO2_DocumentOriginContext <==>|DF-21 →<br/>Document Lifecycle Trigger<br/>← DF-06.7<br/>Cleanup Cancellation / Completion| PO17_UnloadingCleanup
   PO17_UnloadingCleanup <==>|DF-18.2 →<br/>Cleanup State Removal<br/>← DF-19.2<br/>Cleanup State Scan| DS2_PendingExecutions
 
   classDef default fill:#fff,stroke:#000,stroke-width:4px,color:#000,font-size:22px,font-weight:bold,font-family:Arial

@@ -27,7 +27,7 @@ flowchart TB
     PO110_BrowserAgentInvocation ~~~ DS3_BrowserAgentInvocationState
   end
 
-  PO2_DocumentOriginContext <==>|DF-05.2 → ModelContext Access<br/>← DF-06.6 Associated ModelContext| PO19_ModelContextGetter
+  PO2_DocumentOriginContext <==>|DF-20 → ModelContext Access<br/>← DF-06.6 Associated ModelContext| PO19_ModelContextGetter
 
   PO2_DocumentOriginContext ==>|DF-07.1<br/>Tool Definition / Options| PO11_RegisterTool
   PO11_RegisterTool ==>|DF-08.1<br/>Registered Tool State Write| DS1_ModelContextToolMap
@@ -39,7 +39,7 @@ flowchart TB
   PO110_BrowserAgentInvocation ==>|DF-12.1<br/>Tool Dispatch| PO2_DocumentOriginContext
   PO2_DocumentOriginContext ==>|DF-13.1<br/>Tool Output / Failure| PO110_BrowserAgentInvocation
   PO110_BrowserAgentInvocation ==>|DF-14.1<br/>Return Payload| PO3_AIAgentOrchestrator
-  PO110_BrowserAgentInvocation <==>|DF-18.3 → Browser-agent Invocation State Update<br/>← DF-19.3 Browser-agent Invocation State / Lookup| DS3_BrowserAgentInvocationState
+  PO110_BrowserAgentInvocation <==>|DF-23 → Browser-agent Invocation State Update<br/>← DF-24 Browser-agent Invocation State / Lookup| DS3_BrowserAgentInvocationState
 
   classDef default fill:#fff,stroke:#000,stroke-width:4px,color:#000,font-size:22px,font-weight:bold,font-family:Arial
   classDef generic fill:#fff4cc,stroke:#000,stroke-width:4px,color:#000,font-size:22px,font-weight:bold,font-family:Arial
